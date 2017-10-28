@@ -1,0 +1,104 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2017-11-17 22:33+0100\n"
+"PO-Revision-Date: 2017-11-17 22:33+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.4\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Poedit-KeywordsList: __;esc_html__\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: class-wc-bacs-paybysquare.php:62
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: class-wc-bacs-paybysquare.php:71
+msgid "PAY by square Settings"
+msgstr "Nastavenia PAY by square"
+
+#: class-wc-bacs-paybysquare.php:76
+msgid "Beneficiary name"
+msgstr "Príjemca platby"
+
+#: class-wc-bacs-paybysquare.php:78
+msgid "Name of person or organization receiving money"
+msgstr "Meno osoby alebo názov organizácie prijímajúcej peniaze"
+
+#: class-wc-bacs-paybysquare.php:83
+msgid "Username"
+msgstr "Používateľské meno"
+
+#: class-wc-bacs-paybysquare.php:85
+#, php-format
+msgid "Your Username for %s service"
+msgstr "Používateľské meno pre službu %s"
+
+#: class-wc-bacs-paybysquare.php:90
+msgid "Password"
+msgstr "Heslo"
+
+#: class-wc-bacs-paybysquare.php:92
+#, php-format
+msgid "Your Password for %s service"
+msgstr "Heslo pre službu %s"
+
+#: class-wc-bacs-paybysquare.php:97
+msgid "Checkout information"
+msgstr "Informácia v pokladni"
+
+#: class-wc-bacs-paybysquare.php:99
+msgid "Text appended to your BACS title, advertising QR code availability"
+msgstr ""
+"Text, ktorý sa zobrazí pri názve priamej platby na účet, informujúci o "
+"prítomnosti QR kódu"
+
+#: class-wc-bacs-paybysquare.php:100
+msgid "(payment QR code PAY by square)"
+msgstr "(platobný QR kód PAY by square)"
+
+#: class-wc-bacs-paybysquare.php:113
+msgid "Your limit of generated QR codes was depleted"
+msgstr "Prekročili ste váš limit generovaných QR kódov"
+
+#: class-wc-bacs-paybysquare.php:114
+#, php-format
+msgid "To generate more this month, you need to upgrade your program at %s"
+msgstr ""
+"Na to, aby ste tento mesiac mohli vygenerovať ďalšie, potrebujete prejsť na "
+"vyšší program na stránke %s"
+
+#: class-wc-bacs-paybysquare.php:117
+#, php-format
+msgid "To learn more about the service, please visit %s"
+msgstr "Pre viac informácií o službe, prosím navštívte %s"
+
+#: class-wc-bacs-paybysquare.php:167
+msgid "For convenient payment, scan this QR code with your banking app:"
+msgstr ""
+"Pre jednoduchú úhradu naskenujte tento QR kód mobilnou aplikáciou vašej "
+"banky:"
+
+#~ msgid "Buy as a company"
+#~ msgstr "Nákup na firmu / živnosť"
+
+#~ msgid "Type of buying"
+#~ msgstr "Druh nákupu"
+
+#~ msgid "VAT ID"
+#~ msgstr "IČ DPH"
+
+#~ msgid "ID"
+#~ msgstr "IČO"
+
+#~ msgid "Tax ID"
+#~ msgstr "DIČ"
+
+#~ msgid "Buy as a private person"
+#~ msgstr "Nákup ako fyzická osoba"
