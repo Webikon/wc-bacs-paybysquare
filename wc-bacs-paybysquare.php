@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: Pay by square pre WooCommerce
+Plugin Name: PAY by square pre WooCommerce
 Description: Pridáva QR kód na sumarizačnú stránku platby prevodom
 Version: 1.0
 Author: Webikon (Matej Kravjar)
