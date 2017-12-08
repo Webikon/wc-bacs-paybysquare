@@ -109,7 +109,8 @@ class Plugin {
 		if ( 'bacs' === $current_section ) {
 			$pbsq_link = '<a href="https://app.bysquare.com" target="_blank">app.bysquare.com</a>';
 			echo '<p id="woocommerce_bacs_paybysquare_note">';
-			if ( get_option( 'woocommerce_bacs_paybysquare_limit_exceeded' ) ) {
+			$limit_exceeded = get_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
+			if ( $limit_exceeded && gmdate( 'Ym' ) === $limit_exceeded ) {
 				echo '<span style="font-weight: bold; color: #c00">' . __( 'Your limit of generated QR codes was depleted', 'wc-bacs-paybysquare' ) . '</span><br>';
 				printf( __( 'To generate more this month, you need to upgrade your program at %s', 'wc-bacs-paybysquare' ), $pbsq_link );
 			}
@@ -256,26 +257,53 @@ class Plugin {
 			return [];
 		}
 
-		if ( empty( $result['response']['code'] ) || 200 !== $result['response']['code'] ) {
-			trigger_error( 'Paybysquare: Request failed with code "' . $result['response']['code'] . '".' , E_USER_NOTICE );
+		if ( empty( $result['response']['code'] ) ) {
+			trigger_error( 'Paybysquare: Request failed without a code.' , E_USER_NOTICE );
 			return [];
 		}
 
+		$code = $result['response']['code'];
 		$parsed = simplexml_load_string( $result['body'] );
 		if ( false === $parsed ) {
-			trigger_error( 'Paybysquare: Response is not valid XML.' , E_USER_NOTICE );
+			trigger_error( 'Paybysquare: Response is not valid XML (code = ' . $code . ').' , E_USER_NOTICE );
 			return [];
 		}
 
-		if ( ! isset( $parsed->PayBySquare ) ) {
-			trigger_error( 'Paybysquare: Response is missing paybysquare code.' , E_USER_NOTICE );
+		switch ( $code ) {
+		case 200:
+			if ( ! isset( $parsed->PayBySquare ) ) {
+				trigger_error( 'Paybysquare: Response is missing paybysquare code.' , E_USER_NOTICE );
+				return [];
+			}
+
+			if ( false === file_put_contents( $path, base64_decode( "$parsed->PayBySquare" ), LOCK_EX ) ) {
+				trigger_error( 'Paybysquare: Unable to write QR code into file: ' . $path, E_USER_NOTICE );
+				return [];
+			}
+			break;
+		case 400:
+			if ( ! isset( $parsed->ErrorCode ) ) {
+				trigger_error( 'Paybysquare: Request failed with code 400 without details.' , E_USER_NOTICE );
+				return [];
+			}
+			if ( 'E601' !== "$parsed->ErrorCode" ) {
+				$message = empty( $parsed->Message ) ? '' :  ' "' . $parsed->Message . '"';
+				$detail = empty( $parsed->Detail ) ? '' : ' (' . $parsed->Detail . ')';
+				trigger_error( 'Paybysquare: Request failed with code 400 with error ' . $parsed->ErrorCode . $message . $detail . '.' , E_USER_NOTICE );
+				return [];
+			}
+			update_option( 'woocommerce_bacs_paybysquare_limit_exceeded', gmdate( 'Ym' ) );
+			trigger_error( 'Paybysquare: Montly limit was reached (HTTP=400 ErrorCode=E601).' , E_USER_NOTICE );
+			return [];
+		case 401:
+			trigger_error( 'Paybysquare: Username and Password pair does not exists or is disabled.' , E_USER_NOTICE );
+			return [];
+		default:
+			trigger_error( 'Paybysquare: Request failed with code "' . $code . '".' , E_USER_NOTICE );
 			return [];
 		}
 
-		if ( false === file_put_contents( $path, base64_decode( "$parsed->PayBySquare" ), LOCK_EX ) ) {
-			trigger_error( 'Paybysquare: Unable to write QR code into file: ' . $path, E_USER_NOTICE );
-			return [];
-		}
+		delete_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
 
 		return [ $path, $url, $hash ];
 	}
