@@ -178,10 +178,10 @@ class Plugin {
 		}
 		$bank_accounts = [];
 		foreach ( $bacs->account_details as $bank_account ) {
-			$iban = trim( $bank_account['iban'] );
-			$bic = trim( $bank_account['bic'] );
+			$iban = static::sanitize( $bank_account['iban'] );
+			$bic = static::sanitize( $bank_account['bic'] );
 			if ( $iban && $bic ) {
-				$bank_accounts[] = $bank_account;
+				$bank_accounts[] = [ 'iban' => $iban, 'bic' => $bic ];
 			}
 		}
 		if ( ! $bank_accounts ) {
@@ -200,7 +200,7 @@ class Plugin {
 			'variable_symbol' => substr( preg_replace( '/[^0-9]+/', '', $order->get_order_number() ), 0, 10 ),
 			'payment_note' => 'PAY by square ' . $order->get_order_number(),
 			'beneficiary_name' => $bacs->get_option( 'paybysquare_beneficiary' ),
-			'bank_accounts' => $bank_accounts, // different order means different hash, but this is very marginal case
+			'bank_accounts' => $bank_accounts,
 		];
 		$hash = sha1( json_encode( $qrdata ) );
 		$file = 'paybysquare/' . $hash . '.png';
@@ -306,5 +306,10 @@ class Plugin {
 		delete_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
 
 		return [ $path, $url, $hash ];
+	}
+
+	protected static function sanitize( $value ) {
+		// allow only alphanumeric characters (and uppercase lowercased ones)
+		return preg_replace( '/[^0-9A-Z]+/', '', strtoupper( $value ) );
 	}
 }

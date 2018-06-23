@@ -37,6 +37,10 @@ Príčin môže byť viacero. V prvom rade odporúčame skontrolovať prístupov
 
 == Changelog ==
 
+= 1.2 =
+* Pridaná podpora medzier v zadanom IBAN čísle a BIC kóde
+* Doplnená informácia o verziách WP/WC, s ktorými bol plugin testovaný
+
 = 1.1 =
 * Doplnenie informácie do nastavení, že mesačný objem kódov pre účet bol vyčerpaný
 
