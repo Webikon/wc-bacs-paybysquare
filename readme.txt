@@ -3,9 +3,7 @@ Contributors: webikon, kravco
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 4.8.2
-WC requires at least: 3.0
-WC tested up to: 3.2.5
+Tested up to: 4.9.6
 Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv2 or later
