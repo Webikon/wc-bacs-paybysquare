@@ -131,7 +131,7 @@ class Plugin {
 		}
 	}
 
-	public function onhold_email_qrcode_info( $order, $sent_to_admin, $plain_text ) {
+	public function onhold_email_qrcode_info( $order, $sent_to_admin = false, $plain_text = false ) {
 		if ( $order && ! $sent_to_admin && ! $plain_text ) {
 			if ( 'bacs' === $order->get_payment_method() && 'on-hold' === $order->get_status() ) {
 				$info = $this->fetch_qrcode_png_info( $order );

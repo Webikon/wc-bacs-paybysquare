@@ -3,7 +3,7 @@ Contributors: webikon, kravco
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 4.9.6
+Tested up to: 4.9.8
 Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv2 or later
@@ -34,6 +34,9 @@ Príčin môže byť viacero. V prvom rade odporúčame skontrolovať prístupov
 1. Sumarizačná stránka objednávky s QR kódom.
 
 == Changelog ==
+
+= 1.3 =
+* Opravená kompatibilita tvorenia e-mailov s niektorými pluginmi
 
 = 1.2 =
 * Pridaná podpora medzier v zadanom IBAN čísle a BIC kóde
