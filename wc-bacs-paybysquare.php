@@ -3,7 +3,7 @@
 /*
 Plugin Name: PAY by square pre WooCommerce
 Description: Pridáva QR kód na sumarizačnú stránku platby prevodom
-Version: 1.3.2
+Version: 1.3.3
 Author: Webikon (Matej Kravjar)
 Author URI: https://webikon.sk
 License: GPLv2+
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: wc-bacs-paybysquare
 Domain Path: /languages
 WC requires at least: 3.0
-WC tested up to: 3.7.1
+WC tested up to: 4.4.1
 */
 
 namespace Webikon\Woocommerce_Plugin\WC_BACS_Paybysquare;
