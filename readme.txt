@@ -1,9 +1,9 @@
 === PAY by square pre WooCommerce ===
-Contributors: webikon, kravco
+Contributors: webikon, kravco, johnnypea, martinkrcho
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 4.9.8
+Tested up to: 5.2.4
 Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv2 or later
@@ -22,18 +22,25 @@ Plugin pridáva na stránku so sumárom o objednávke obrázok QR kódu, pomocou
 1. Aktivujte plugin cez menu 'Pluginy' v administrácii WordPress
 1. Na stránke nastavení priamej platby na účet sa objaví nová oblasť s nastaveniami pre PAY by square
 1. Vyplňte v nastaveniach prijímateľa platby a prístupové údaje k https://app.bysquare.com pre generovanie QR kódov
+1. Pridajte v nastaveniach platobnej metódy "Priama platba na bankový účet" aspoň jeden bankový účet. Pre vygenerovanie QR kódu je potrebný IBAN a BIC.
 
 == Frequently Asked Questions ==
 
 = Postupoval(a) som podľa inštrukcií, avšak QR kód sa mi na sumarizačnej stránke objednávky / v sumarizačnom maili nezobrazuje =
 
-Príčin môže byť viacero. V prvom rade odporúčame skontrolovať prístupové údaje, v druhom rade skontrolovať počet zostávajúcich generovaní kódov v administrácii služby https://app.bysquare.com
+Príčin môže byť viacero. V prvom rade odporúčame skontrolovať prístupové údaje, v druhom rade skontrolovať počet zostávajúcich generovaní kódov v administrácii služby https://app.bysquare.com. Tretím dôvodom môže byť použitie SMTP pluginu, ktorý nepoužíva na posielanie emailov knižnicu PHPMailer, ale nejakú inú.
 
 == Screenshots ==
 
 1. Sumarizačná stránka objednávky s QR kódom.
 
 == Changelog ==
+
+= 1.3.2 =
+* Upravené inštrukcie pre inštaláciu a aktualizované info o kompatibilite s novšími verziami WordPress a WooCommerce.
+
+= 1.3.1 =
+* Zaktualizované info o kompatibilite s novšími verziami WordPress a WooCommerce.
 
 = 1.3 =
 * Opravená kompatibilita tvorenia e-mailov s niektorými pluginmi
