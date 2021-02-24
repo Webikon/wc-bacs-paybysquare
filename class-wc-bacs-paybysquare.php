@@ -82,6 +82,7 @@ class Plugin {
 			'paybysquare_username' => [
 				'title' => __( 'Username', 'wc-bacs-paybysquare' ),
 				'type' => 'text',
+				/* translators: %s: service name */
 				'description' => sprintf( __( 'Your Username for %s service', 'wc-bacs-paybysquare' ), $pbsq_text ),
 				'default' => '',
 				'desc_tip' => true,
@@ -89,6 +90,7 @@ class Plugin {
 			'paybysquare_password' => [
 				'title' => __( 'Password', 'wc-bacs-paybysquare' ),
 				'type' => 'password',
+				/* translators: %s: service name */
 				'description' => sprintf( __( 'Your Password for %s service', 'wc-bacs-paybysquare' ), $pbsq_text ),
 				'default' => '',
 				'desc_tip' => true,
@@ -97,7 +99,7 @@ class Plugin {
 				'title' => __( 'Checkout information', 'wc-bacs-paybysquare' ),
 				'type' => 'text',
 				'description' => __( 'Text appended to your BACS title, advertising QR code availability', 'wc-bacs-paybysquare' ),
-				'default' => __( '(payment QR code PAY by square)', 'wc-bacs-paybysquare' ),
+				'default' => __( '(payment QR code)', 'wc-bacs-paybysquare' ),
 				'desc_tip' => true,
 			],
 			'paybysquare_display' => [
@@ -124,9 +126,11 @@ class Plugin {
 			$limit_exceeded = get_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
 			if ( $limit_exceeded && gmdate( 'Ym' ) === $limit_exceeded ) {
 				echo '<span style="font-weight: bold; color: #c00">' . __( 'Your limit of generated QR codes was depleted', 'wc-bacs-paybysquare' ) . '</span><br>';
+				/* translators: %s: service link */
 				printf( __( 'To generate more this month, you need to upgrade your program at %s', 'wc-bacs-paybysquare' ), $pbsq_link );
 			}
 			else {
+				/* translators: %s: service link */
 				printf( __( 'To learn more about the service, please visit %s', 'wc-bacs-paybysquare' ), $pbsq_link );
 			}
 			echo '</p>';
