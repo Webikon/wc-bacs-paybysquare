@@ -82,6 +82,7 @@ class Plugin {
 			'paybysquare_username' => [
 				'title' => __( 'Username', 'wc-bacs-paybysquare' ),
 				'type' => 'text',
+				/* translators: %s: service name */
 				'description' => sprintf( __( 'Your Username for %s service', 'wc-bacs-paybysquare' ), $pbsq_text ),
 				'default' => '',
 				'desc_tip' => true,
@@ -89,6 +90,7 @@ class Plugin {
 			'paybysquare_password' => [
 				'title' => __( 'Password', 'wc-bacs-paybysquare' ),
 				'type' => 'password',
+				/* translators: %s: service name */
 				'description' => sprintf( __( 'Your Password for %s service', 'wc-bacs-paybysquare' ), $pbsq_text ),
 				'default' => '',
 				'desc_tip' => true,
@@ -97,7 +99,19 @@ class Plugin {
 				'title' => __( 'Checkout information', 'wc-bacs-paybysquare' ),
 				'type' => 'text',
 				'description' => __( 'Text appended to your BACS title, advertising QR code availability', 'wc-bacs-paybysquare' ),
-				'default' => __( '(payment QR code PAY by square)', 'wc-bacs-paybysquare' ),
+				'default' => __( '(payment QR code)', 'wc-bacs-paybysquare' ),
+				'desc_tip' => true,
+			],
+			'paybysquare_display' => [
+				'title' => __( 'Display QR code', 'wc-bacs-paybysquare' ),
+				'description' => __( 'Setting controlling which type of QR should be displayed', 'wc-bacs-paybysquare' ),
+				'type' => 'select',
+				'options' => [
+					'slovak' => __( 'PAY by square (Slovak)', 'wc-bacs-paybysquare' ),
+					'czech' => __( 'QR platba (Czech)', 'wc-bacs-paybysquare' ),
+					'auto' => __( 'Automatic (based on currency)', 'wc-bacs-paybysquare' ),
+				],
+				'default' => 'auto',
 				'desc_tip' => true,
 			],
 		];
@@ -112,9 +126,11 @@ class Plugin {
 			$limit_exceeded = get_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
 			if ( $limit_exceeded && gmdate( 'Ym' ) === $limit_exceeded ) {
 				echo '<span style="font-weight: bold; color: #c00">' . __( 'Your limit of generated QR codes was depleted', 'wc-bacs-paybysquare' ) . '</span><br>';
+				/* translators: %s: service link */
 				printf( __( 'To generate more this month, you need to upgrade your program at %s', 'wc-bacs-paybysquare' ), $pbsq_link );
 			}
 			else {
+				/* translators: %s: service link */
 				printf( __( 'To learn more about the service, please visit %s', 'wc-bacs-paybysquare' ), $pbsq_link );
 			}
 			echo '</p>';
@@ -176,6 +192,12 @@ class Plugin {
 		if ( ! $bacs ) {
 			return [];
 		}
+		$display = $bacs->get_option( 'paybysquare_display' );
+		$slovak = 'slovak' === $display || 'auto' === $display && 'EUR' === $order->get_currency();
+		$czech = 'czech' === $display || 'auto' === $display && 'CZK' === $order->get_currency();
+		if ( ! $slovak && ! $czech ) {
+			return [];
+		}
 		$bank_accounts = [];
 		foreach ( $bacs->account_details as $bank_account ) {
 			$iban = static::sanitize( $bank_account['iban'] );
@@ -202,7 +224,7 @@ class Plugin {
 			'beneficiary_name' => $bacs->get_option( 'paybysquare_beneficiary' ),
 			'bank_accounts' => $bank_accounts,
 		];
-		$hash = sha1( json_encode( $qrdata ) );
+		$hash = sha1( json_encode( $qrdata + [ 'display' => $display ] ) );
 		$file = 'paybysquare/' . $hash . '.png';
 		$path = $wp_upload['basedir'] . '/' . $file;
 		$url = $wp_upload['baseurl'] . '/' . $file;
@@ -219,6 +241,10 @@ class Plugin {
 		$xml = '<BySquareXmlDocuments xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
 			. '<Username>' . esc_html( $bacs->get_option( 'paybysquare_username' ) ) . '</Username>'
 			. '<Password>' . esc_html( $bacs->get_option( 'paybysquare_password' ) ) . '</Password>'
+			. '<CountryOptions>'
+			. '<Slovak>' . esc_html( $slovak ? 'true' : 'false' ) . '</Slovak>'
+			. '<Czech>' . esc_html( $czech ? 'true' : 'false' ) . '</Czech>'
+			. '</CountryOptions>'
 			. '<Documents>'
 			. '<Pay xsi:type="Pay" xmlns="http://www.bysquare.com/bysquare">'
 			. '<Payments>'
@@ -271,12 +297,18 @@ class Plugin {
 
 		switch ( $code ) {
 		case 200:
-			if ( ! isset( $parsed->PayBySquare ) ) {
+			if ( $slovak && ! isset( $parsed->PayBySquare ) ) {
 				trigger_error( 'Paybysquare: Response is missing paybysquare code.' , E_USER_NOTICE );
 				return [];
 			}
+			if ( $czech && ! isset( $parsed->QrPlatbaCz ) ) {
+				trigger_error( 'Paybysquare: Response is missing qrplatbacz code.' , E_USER_NOTICE );
+				return [];
+			}
 
-			if ( false === file_put_contents( $path, base64_decode( "$parsed->PayBySquare" ), LOCK_EX ) ) {
+			$imageData = $slovak ? "$parsed->PayBySquare" : "$parsed->QrPlatbaCz";
+
+			if ( false === file_put_contents( $path, base64_decode( $imageData ), LOCK_EX ) ) {
 				trigger_error( 'Paybysquare: Unable to write QR code into file: ' . $path, E_USER_NOTICE );
 				return [];
 			}
