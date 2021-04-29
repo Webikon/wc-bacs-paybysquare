@@ -7,6 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Plugin {
+	const QRPLATBA_INVALID = ';[^0-9A-Za-z $%+./:-];';
+
 	protected static $instance;
 	protected $order;
 	protected $bacs;
@@ -78,6 +80,30 @@ class Plugin {
 				'description' => __( 'Name of person or organization receiving money', 'wc-bacs-paybysquare' ),
 				'default' => '',
 				'desc_tip' => true,
+				'sanitize_callback' => function( $value ) {
+					if ( preg_match( static::QRPLATBA_INVALID, $value ) ) {
+						add_action( 'admin_notices', function() {
+							echo '<div class="notice notice-warning is-dismissible"><p><b>'
+								. sprintf(
+									/* translators: %s field name */
+									__( 'Field "%s" does contain character, that is invalid for Czech QR code.', 'wc-bacs-paybysquare' ),
+									__( 'Beneficiary name', 'wc-bacs-paybysquare' )
+								)
+								. '</b></p><p>'
+								. __( 'If you are not using Czech QR code, you may safely ignore this warning.', 'wc-bacs-paybysquare' )
+								. '</p><p>'
+								. sprintf(
+									/* translators: %1$s valid digits, %2$s valid letters, %3$s valid symbols */
+									__( 'Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s', 'wc-bacs-paybysquare' ),
+									'0..9',
+									'A..Z a..z',
+									'$ % + - . / :'
+								)
+								. '</p></div>';
+						});
+					}
+					return $value;
+				}
 			],
 			'paybysquare_username' => [
 				'title' => __( 'Username', 'wc-bacs-paybysquare' ),
@@ -215,13 +241,18 @@ class Plugin {
 			trigger_error( 'Paybysquare: Searching for WordPress upload directory failed: ' . $wp_upload['error'], E_USER_NOTICE );
 			return [];
 		}
+		$beneficiary_name = strtoupper( $bacs->get_option( 'paybysquare_beneficiary' ) );
+		if ( $czech && preg_match( static::QRPLATBA_INVALID, $beneficiary_name ) ) {
+			trigger_error( 'Paybysquare: Invalid character detected in beneficiary name, cannot generage Czech QR code', E_USER_NOTICE );
+			return [];
+		}
 		
 		$qrdata = [
 			'total' => $order->get_total(),
 			'currency' => $order->get_currency(),
 			'variable_symbol' => substr( preg_replace( '/[^0-9]+/', '', $order->get_order_number() ), 0, 10 ),
 			'payment_note' => 'PAY by square ' . $order->get_order_number(),
-			'beneficiary_name' => $bacs->get_option( 'paybysquare_beneficiary' ),
+			'beneficiary_name' => $beneficiary_name,
 			'bank_accounts' => $bank_accounts,
 		];
 		$hash = sha1( json_encode( $qrdata + [ 'display' => $display ] ) );
