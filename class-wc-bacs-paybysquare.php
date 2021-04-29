@@ -218,7 +218,7 @@ class Plugin {
 			elseif ( 'CZK' === $order->get_currency() ) {
 				$iban_prefix = 'CZ';
 			}
-			if ( $iban_prefix ) {
+			if ( ! empty( $iban_prefix ) ) {
 				$bank_accounts = array_merge(
 					array_filter( $bank_accounts, function( $account ) use( $iban_prefix ) {
 						return 0 === strncmp( $iban_prefix, $account['iban'], 2 );
