@@ -13,22 +13,32 @@ Tento plugin pridáva QR kód PAY by square pre priamu platbu na bankový účet
 
 == Description ==
 
-Plugin pridáva na stránku so sumárom o objednávke obrázok QR kódu, pomocou ktorého môže klient pohodlne zaplatiť cez mobilnú aplikáciu svojej banky. Tento QR kód je taktiež zobrazený v e-maili, ktorý po vytvorení objednávky s priamou platbou na účet štandardne posiela WooCommerce.
+Platobná brána Pay by Square uľahčuje platby prevodom na účet prostredníctvom QR kódov.
+
+Plugin vygeneruje QR kód, ktorý sa vloží na stránku na stránku so sumárom objednávky a zárove sa QR kód odošle prostredníctvom emailu s informáciami o platbe. Zákazník následne naskenuje QR kód pomocou mobilnej aplikácie svojej banky, v ktorej sa mu predvyplnia všetky potrebné údaje k platbe.
+
+Plugin Pay by Square podporuje slovenský formát QR kódu pre platbu a aj český formát – QR platba.
 
 == Installation ==
 
-1. Vytvorte si účet na stránke https://app.bysquare.com
-1. Plugin nainštalujte cez administráciu WordPress, alebo ručne nahrajte celý adresár `wc-bacs-paybysquare` do adresára `/wp-content/plugins/`
-1. Aktivujte plugin cez menu 'Pluginy' v administrácii WordPress
-1. Na stránke nastavení priamej platby na účet sa objaví nová oblasť s nastaveniami pre PAY by square
-1. Vyplňte v nastaveniach prijímateľa platby a prístupové údaje k https://app.bysquare.com pre generovanie QR kódov
-1. Pridajte v nastaveniach platobnej metódy "Priama platba na bankový účet" aspoň jeden bankový účet. Pre vygenerovanie QR kódu je potrebný IBAN a BIC.
+1. Pripravte si Váš eshop na platforme WooCommerce.
+2. Zaregistrujte sa na stránke app.bysquare.com.
+3. Nainštalujte a aktivujte si plugin Pay by Square (Pluginy -> Pridať nový -> Nahrať plugin)
+4. Nastavte si plugin (WooCommerce -> Platby -> Spravovať) nasledovne:
+	a) Povoľte prevod na bankový účet
+	b) Vložte údaje minimálne jedného bankového účtu – údaje IBAN a BIC sú povinné
+	c) Príjemca platby – meno, ktoré ste pri registrácii uviedli ako Meno kontaktnej osoby
+	d) Používateľské meno a heslo – údaje, pod ktorými sa prihlasujete na app.bysquare.com – používateľské meno je v tvare emailu
+	e) Ostatné položky v nastaveniach môžete upraviť podľa Vašich preferencií
+5. Vykonajte testovaciu objednávku a skontrolujte si zobrazenie QR kódu po odoslaní objednávky a v emaile, ktorý príde zákazníkovi.
 
 == Frequently Asked Questions ==
 
 = Postupoval(a) som podľa inštrukcií, avšak QR kód sa mi na sumarizačnej stránke objednávky / v sumarizačnom maili nezobrazuje =
 
-Príčin môže byť viacero. V prvom rade odporúčame skontrolovať prístupové údaje, v druhom rade skontrolovať počet zostávajúcich generovaní kódov v administrácii služby https://app.bysquare.com. Tretím dôvodom môže byť použitie SMTP pluginu, ktorý nepoužíva na posielanie emailov knižnicu PHPMailer, ale nejakú inú.
+Ak Vám plugin QR kódy negeneruje, skontrolujte si správnosť prihlasovacích údajov a údajov bankového účtu. Taktiež si skontrolujte počet zostávajúcich generovaní kódov v administrácii služby app.bysquare.com.
+
+Ak využívate na odosielanie emailov nejaký SMTP plugin, overte si, že používa pre odosielanie knižnicu PHPmailer (php_mail), v opačnom prípade s ním plugin Pay by Square nemusí správne fungovať. Podporovaný je napríklad plugin WP mail SMTP.
 
 == Screenshots ==
 
