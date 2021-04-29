@@ -236,6 +236,26 @@ class Plugin {
 			trigger_error( 'Paybysquare: BACS payment gateway has no IBAN+BIC specified in account details.', E_USER_NOTICE );
 			return [];
 		}
+		// in auto mode, prefer bank accounts based on currency (SK* for EUR, CZ* for CZK)
+		if ( 'auto' === $display && count( $bank_accounts ) > 1 ) {
+			if ( 'EUR' === $order->get_currency() ) {
+				$iban_prefix = 'SK';
+			}
+			elseif ( 'CZK' === $order->get_currency() ) {
+				$iban_prefix = 'CZ';
+			}
+			if ( ! empty( $iban_prefix ) ) {
+				$bank_accounts = array_merge(
+					array_filter( $bank_accounts, function( $account ) use( $iban_prefix ) {
+						return 0 === strncmp( $iban_prefix, $account['iban'], 2 );
+					} ),
+					array_filter( $bank_accounts, function( $account ) use( $iban_prefix ) {
+						return 0 !== strncmp( $iban_prefix, $account['iban'], 2 );
+					} )
+				);
+			}
+		}
+
 		$wp_upload = wp_upload_dir();
 		if ( ! empty( $wp_upload['error'] ) ) {
 			trigger_error( 'Paybysquare: Searching for WordPress upload directory failed: ' . $wp_upload['error'], E_USER_NOTICE );
