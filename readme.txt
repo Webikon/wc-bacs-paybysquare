@@ -43,6 +43,9 @@ Ak využívate na odosielanie emailov nejaký SMTP plugin, overte si, že použ�
 == Screenshots ==
 
 1. Sumarizačná stránka objednávky s QR kódom.
+2. Pay by Square plugin - Nastavenia
+3. Pay by Square plugin - ďakovná stránka
+4. Pay by Square plugin - Email
 
 == Changelog ==
 
