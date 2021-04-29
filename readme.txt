@@ -3,7 +3,7 @@ Contributors: webikon, kravco, johnnypea, martinkrcho
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 5.6.2
+Tested up to: 5.7.1
 Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv2 or later
@@ -36,7 +36,11 @@ Príčin môže byť viacero. V prvom rade odporúčame skontrolovať prístupov
 
 == Changelog ==
 
-= 1.4
+= 1.4.1 =
+* Upozornenie na nepovolené znaky v nastavení „príjemca platby“ pre český štandard QR Platba.
+* Preferovanie účtu podľa meny objednávky, pre eurách preferuje IBANy začínajúce na SK, pri českých korunách na CZ
+
+= 1.4 =
 * Pridanie nastavení a podpory pre generovanie českého štandardu QR Platba.
 
 = 1.3.3 =
