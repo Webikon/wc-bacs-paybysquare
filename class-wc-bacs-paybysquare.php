@@ -191,7 +191,9 @@ class Plugin {
 		if ( $order instanceof \WC_Order && 'bacs' === $order->get_payment_method() && 'on-hold' === $order->get_status() ) {
 			$info = $this->fetch_qrcode_png_info( $order );
 			if ( $info ) {
-				$phpmailer->addEmbeddedImage( $info[0], $info[2] );
+				if ( ! $phpmailer->addEmbeddedImage( $info[0], $info[2] ) ) {
+					trigger_error( 'Paybysquare: Adding embedded image into sent email failed: ' . $phpmailer->ErrorInfo, E_USER_NOTICE );
+				}
 			}
 		}
 	}
