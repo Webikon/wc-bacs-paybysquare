@@ -3,7 +3,7 @@ Contributors: webikon, kravco, johnnypea, martinkrcho
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 5.7.1
+Tested up to: 5.7.2
 Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv2 or later
@@ -48,6 +48,9 @@ Ak využívate na odosielanie emailov nejaký SMTP plugin, overte si, že použ�
 4. Pay by Square plugin - Email
 
 == Changelog ==
+
+= 1.4.2 =
+* Pridanie hlásenia chyby, ak neuspeje vloženie súboru s QR kódom do mailu
 
 = 1.4.1 =
 * Upozornenie na nepovolené znaky v nastavení „príjemca platby“ pre český štandard QR Platba.
