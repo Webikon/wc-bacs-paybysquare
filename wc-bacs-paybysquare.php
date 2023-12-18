@@ -7,8 +7,8 @@
  * @copyright 2017 Webikon & Matej Kravjar
  * @license GPLv2+
  *
- * Plugin Name: PAY by square pre WooCommerce
- * Description: Pridáva QR kód na sumarizačnú stránku platby prevodom
+ * Plugin Name: PAY by square for WooCommerce
+ * Description: Adds a payment QR code on summary page of direct bank transfer
  * Version: 1.4.2
  * Author: Webikon (Matej Kravjar)
  * Author URI: https://webikon.sk
