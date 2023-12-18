@@ -20,5 +20,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require __DIR__ . '/src/class-wc-bacs-paybysquare.php';
+require __DIR__ . '/src/class-plugin.php';
 Plugin::run( __FILE__ );
