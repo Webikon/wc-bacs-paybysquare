@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of WordPress plugin: PAY by square for WooCommerce
+ *
+ * @package Webikon\Woocommerce_Plugin\WC_BACS_Paybysquare
+ * @author Webikon (Matej Kravjar) <hello@webikon.sk>
+ * @copyright 2017 Webikon & Matej Kravjar
+ * @license GPLv2+
+ */
 
 namespace Webikon\Woocommerce_Plugin\WC_BACS_Paybysquare;
 
@@ -6,16 +14,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Main plugin class that contains all logic.
+ */
 class Plugin {
 	const QRPLATBA_INVALID = ';[^0-9A-Za-z $%+./:-];';
 
+	/**
+	 * Singleton instance.
+	 *
+	 * @var self|null
+	 */
 	protected static $instance;
+
+	/**
+	 * Remember order for mail hooks.
+	 *
+	 * @var \WC_Order|null
+	 */
 	protected $order;
+
+	/**
+	 * Direct bank transfer data.
+	 *
+	 * @var \WC_Gateway_BACS|false|null
+	 */
 	protected $bacs;
 
+	/**
+	 * Protected constructor.
+	 */
 	protected function __construct() {
 	}
 
+	/**
+	 * Maybe create and get the singleton instance.
+	 *
+	 * @return self
+	 */
 	public static function get_instance() {
 		if ( ! static::$instance ) {
 			static::$instance = new static();
@@ -23,6 +59,11 @@ class Plugin {
 		return static::$instance;
 	}
 
+	/**
+	 * Get direct bank transfer data.
+	 *
+	 * @return \WC_Gateway_BACS|false
+	 */
 	public function get_bacs() {
 		if ( null === $this->bacs ) {
 			$available = \WC()->payment_gateways->payment_gateways();
@@ -36,6 +77,12 @@ class Plugin {
 		return $this->bacs;
 	}
 
+	/**
+	 * Plugin setup.
+	 *
+	 * @param string $file main plugin file.
+	 * @return void
+	 */
 	public static function run( $file ) {
 		$plugin = static::get_instance();
 		add_action( 'init', [ $plugin, 'initialize' ] );
@@ -49,10 +96,21 @@ class Plugin {
 		add_filter( 'woocommerce_gateway_title', [ $plugin, 'filter_gateway_title' ], 1000, 2 );
 	}
 
+	/**
+	 * Plugin initialization.
+	 *
+	 * @return void
+	 */
 	public function initialize() {
 		load_plugin_textdomain( 'wc-bacs-paybysquare', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
 
+	/**
+	 * Register settings link to WordPress plugin list.
+	 *
+	 * @param array<string, string> $links existing plugin links.
+	 * @return array<string, string>
+	 */
 	public function add_settings_link( $links ) {
 		$admin_url = admin_url(
 			add_query_arg(
@@ -70,6 +128,12 @@ class Plugin {
 		);
 	}
 
+	/**
+	 * Register PAY by square settings on direct bank transfer.
+	 *
+	 * @param array<string, array<string, mixed>> $fields existing direct bank transfer fields.
+	 * @return array<string, array<string, mixed>>
+	 */
 	public function filter_form_fields( $fields ) {
 		$pbsq_text = 'app.bysquare.com';
 		return $fields + [
@@ -150,6 +214,11 @@ class Plugin {
 		];
 	}
 
+	/**
+	 * Inform user that monthly limit has been reached.
+	 *
+	 * @return void
+	 */
 	public function add_settings_note() {
 		global $current_section;
 
@@ -169,6 +238,12 @@ class Plugin {
 		}
 	}
 
+	/**
+	 * Render QR code on thank you page.
+	 *
+	 * @param int $order_id the order ID to render QR code for.
+	 * @return void
+	 */
 	public function thankyou_page_qrcode( $order_id ) {
 		$order = wc_get_order( $order_id );
 		if ( $order ) {
@@ -179,6 +254,14 @@ class Plugin {
 		}
 	}
 
+	/**
+	 * Render QR code image into email.
+	 *
+	 * @param \WC_Order $order the order to render QR code for.
+	 * @param boolean   $sent_to_admin send email to admin as well.
+	 * @param boolean   $plain_text send email in plaintext.
+	 * @return void
+	 */
 	public function onhold_email_qrcode_info( $order, $sent_to_admin = false, $plain_text = false ) {
 		if ( $order && ! $sent_to_admin && ! $plain_text ) {
 			if ( 'bacs' === $order->get_payment_method() && 'on-hold' === $order->get_status() ) {
@@ -192,18 +275,32 @@ class Plugin {
 		}
 	}
 
+	/**
+	 * Embed QR code image data into email.
+	 *
+	 * @param \PHPMailer\PHPMailer\PHPMailer $phpmailer the mailer instance.
+	 * @return void
+	 */
 	public function onhold_email_attachments( $phpmailer ) {
 		$order = $this->order;
 		if ( $order instanceof \WC_Order && 'bacs' === $order->get_payment_method() && 'on-hold' === $order->get_status() ) {
 			$info = $this->fetch_qrcode_png_info( $order );
 			if ( $info ) {
 				if ( ! $phpmailer->addEmbeddedImage( $info[0], $info[2] ) ) {
-					trigger_error( 'Paybysquare: Adding embedded image into sent email failed: ' . $phpmailer->ErrorInfo, E_USER_NOTICE );
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$this->logger->warning( 'Adding embedded image into sent email failed: ' . $phpmailer->ErrorInfo );
 				}
 			}
 		}
 	}
 
+	/**
+	 * Hook into direct bank transfer title.
+	 *
+	 * @param string $title existing gateway title.
+	 * @param string $gateway_id the gateway ID.
+	 * @return string
+	 */
 	public function filter_gateway_title( $title, $gateway_id ) {
 		$bacs = $this->get_bacs();
 		if ( 'bacs' === $gateway_id && $bacs && $bacs->get_option( 'paybysquare_information' ) ) {
@@ -212,6 +309,12 @@ class Plugin {
 		return $title;
 	}
 
+	/**
+	 * The QR code HTML to render on thankyou page and email.
+	 *
+	 * @param string $src the QR code image source.
+	 * @return void
+	 */
 	protected function output_qr_code_image( $src ) {
 		if ( $src ) {
 			echo '<div style="margin: 1em 0 1em">'
@@ -221,6 +324,12 @@ class Plugin {
 		}
 	}
 
+	/**
+	 * Handle request to PAY by square API.
+	 *
+	 * @param \WC_Order $order the order to generate QR code for.
+	 * @return array{0: string, 1: string, 2: string}|array{}
+	 */
 	protected function fetch_qrcode_png_info( \WC_Order $order ) {
 		$bacs = $this->get_bacs();
 		if ( ! $bacs ) {
@@ -247,7 +356,7 @@ class Plugin {
 			trigger_error( 'Paybysquare: BACS payment gateway has no IBAN+BIC specified in account details.', E_USER_NOTICE );
 			return [];
 		}
-		// in auto mode, prefer bank accounts based on currency (SK* for EUR, CZ* for CZK)
+		// in auto mode, prefer bank accounts based on currency (SK* for EUR, CZ* for CZK).
 		if ( 'auto' === $display && count( $bank_accounts ) > 1 ) {
 			if ( 'EUR' === $order->get_currency() ) {
 				$iban_prefix = 'SK';
@@ -410,8 +519,15 @@ class Plugin {
 		return [ $path, $url, $hash ];
 	}
 
+	/**
+	 * Sanitize function for IBAN and BIC.
+	 *
+	 * @internal
+	 * @param string $value unsanitized value.
+	 * @return string
+	 */
 	protected static function sanitize( $value ) {
-		// allow only alphanumeric characters (and uppercase lowercased ones)
+		// allow only alphanumeric characters (and uppercase lowercased ones).
 		return preg_replace( '/[^0-9A-Z]+/', '', strtoupper( $value ) );
 	}
 }
