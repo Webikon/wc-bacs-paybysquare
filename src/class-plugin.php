@@ -164,15 +164,15 @@ class Plugin {
 								echo '<div class="notice notice-warning is-dismissible"><p><b>'
 								. sprintf(
 									/* translators: %s field name */
-									__( 'Field "%s" does contain character, that is invalid for Czech QR code.', 'wc-bacs-paybysquare' ),
-									__( 'Beneficiary name', 'wc-bacs-paybysquare' )
+									esc_html__( 'Field "%s" does contain character, that is invalid for Czech QR code.', 'wc-bacs-paybysquare' ),
+									esc_html__( 'Beneficiary name', 'wc-bacs-paybysquare' )
 								)
 								. '</b></p><p>'
-								. __( 'If you are not using Czech QR code, you may safely ignore this warning.', 'wc-bacs-paybysquare' )
+								. esc_html__( 'If you are not using Czech QR code, you may safely ignore this warning.', 'wc-bacs-paybysquare' )
 								. '</p><p>'
 								. sprintf(
 									/* translators: %1$s valid digits, %2$s valid letters, %3$s valid symbols */
-									__( 'Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s', 'wc-bacs-paybysquare' ),
+									esc_html__( 'Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s', 'wc-bacs-paybysquare' ),
 									'0..9',
 									'A..Z a..z',
 									'$ % + - . / :'
@@ -231,16 +231,22 @@ class Plugin {
 		global $current_section;
 
 		if ( 'bacs' === $current_section ) {
-			$pbsq_link = '<a href="https://app.bysquare.com" target="_blank">app.bysquare.com</a>';
+			$pbsq_link    = '<a href="https://app.bysquare.com" target="_blank">app.bysquare.com</a>';
+			$allowed_html = [
+				'a' => [
+					'href'   => true,
+					'target' => true,
+				],
+			];
 			echo '<p id="woocommerce_bacs_paybysquare_note">';
 			$limit_exceeded = get_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
 			if ( $limit_exceeded && gmdate( 'Ym' ) === $limit_exceeded ) {
-				echo '<span style="font-weight: bold; color: #c00">' . __( 'Your limit of generated QR codes was depleted', 'wc-bacs-paybysquare' ) . '</span><br>';
+				echo '<span style="font-weight: bold; color: #c00">' . esc_html__( 'Your limit of generated QR codes was depleted', 'wc-bacs-paybysquare' ) . '</span><br>';
 				/* translators: %s: service link */
-				printf( __( 'To generate more this month, you need to upgrade your program at %s', 'wc-bacs-paybysquare' ), $pbsq_link );
+				printf( esc_html__( 'To generate more this month, you need to upgrade your program at %s', 'wc-bacs-paybysquare' ), wp_kses( $pbsq_link, $allowed_html ) );
 			} else {
 				/* translators: %s: service link */
-				printf( __( 'To learn more about the service, please visit %s', 'wc-bacs-paybysquare' ), $pbsq_link );
+				printf( esc_html__( 'To learn more about the service, please visit %s', 'wc-bacs-paybysquare' ), wp_kses( $pbsq_link, $allowed_html ) );
 			}
 			echo '</p>';
 		}
@@ -326,7 +332,7 @@ class Plugin {
 	protected function output_qr_code_image( $src ) {
 		if ( $src ) {
 			echo '<div style="margin: 1em 0 1em">'
-				. '<p>' . __( 'For convenient payment, scan this QR code with your banking app:', 'wc-bacs-paybysquare' ) . '</p>'
+				. '<p>' . esc_html__( 'For convenient payment, scan this QR code with your banking app:', 'wc-bacs-paybysquare' ) . '</p>'
 				. '<img src="' . esc_attr( $src ) . '" alt="[PAY by square]" style="width: 16em; height: auto" />'
 				. '</div>';
 		}
