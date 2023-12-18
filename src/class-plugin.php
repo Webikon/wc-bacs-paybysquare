@@ -61,8 +61,8 @@ class Plugin {
 	 * @return self
 	 */
 	public static function get_instance() {
-		if ( ! static::$instance ) {
-			static::$instance = new static();
+		if ( null === static::$instance ) {
+			static::$instance = new self();
 		}
 		return static::$instance;
 	}
@@ -74,7 +74,7 @@ class Plugin {
 	 */
 	public function get_bacs() {
 		if ( null === $this->bacs ) {
-			$available = \WC()->payment_gateways->payment_gateways();
+			$available = \WC()->payment_gateways()->payment_gateways();
 			if ( empty( $available['bacs'] ) ) {
 				$this->logger->error( 'BACS payment gateway is not available' );
 				$this->bacs = false;
@@ -260,7 +260,7 @@ class Plugin {
 	 */
 	public function thankyou_page_qrcode( $order_id ) {
 		$order = wc_get_order( $order_id );
-		if ( $order ) {
+		if ( $order instanceof \WC_Order ) {
 			$info = $this->fetch_qrcode_png_info( $order );
 			if ( $info ) {
 				$this->output_qr_code_image( $info[1] );
@@ -277,7 +277,7 @@ class Plugin {
 	 * @return void
 	 */
 	public function onhold_email_qrcode_info( $order, $sent_to_admin = false, $plain_text = false ) {
-		if ( $order && ! $sent_to_admin && ! $plain_text ) {
+		if ( ! $sent_to_admin && ! $plain_text ) {
 			if ( 'bacs' === $order->get_payment_method() && 'on-hold' === $order->get_status() ) {
 				$info = $this->fetch_qrcode_png_info( $order );
 				if ( $info ) {
@@ -344,7 +344,7 @@ class Plugin {
 	 * @param \WC_Order $order the order to generate QR code for.
 	 * @return array{0: string, 1: string, 2: string}|array{}
 	 */
-	protected function fetch_qrcode_png_info( \WC_Order $order ) {
+	protected function fetch_qrcode_png_info( $order ) {
 		$bacs = $this->get_bacs();
 		if ( ! $bacs ) {
 			return [];
@@ -409,15 +409,20 @@ class Plugin {
 		$qrdata = [
 			'total'            => $order->get_total(),
 			'currency'         => $order->get_currency(),
-			'variable_symbol'  => substr( preg_replace( '/[^0-9]+/', '', $order->get_order_number() ), 0, 10 ),
+			'variable_symbol'  => substr( preg_replace( '/[^0-9]+/', '', $order->get_order_number() ) ?? '', 0, 10 ),
 			'payment_note'     => 'PAY by square ' . $order->get_order_number(),
 			'beneficiary_name' => $beneficiary_name,
 			'bank_accounts'    => $bank_accounts,
 		];
-		$hash   = sha1( json_encode( $qrdata + [ 'display' => $display ] ) );
-		$file   = 'paybysquare/' . $hash . '.png';
-		$path   = $wp_upload['basedir'] . '/' . $file;
-		$url    = $wp_upload['baseurl'] . '/' . $file;
+		$json   = wp_json_encode( $qrdata + [ 'display' => $display ] );
+		if ( false === $json ) {
+			$this->logger->error( 'Encoding of QR code properties into JSON has failed' );
+			return [];
+		}
+		$hash = sha1( $json );
+		$file = 'paybysquare/' . $hash . '.png';
+		$path = $wp_upload['basedir'] . '/' . $file;
+		$url  = $wp_upload['baseurl'] . '/' . $file;
 
 		if ( file_exists( $path ) ) {
 			return [ $path, $url, $hash ];
@@ -440,7 +445,7 @@ class Plugin {
 			. '<Payments>'
 			. '<Payment>'
 			. '<PaymentOptions>paymentorder</PaymentOptions>'
-			. '<Amount>' . esc_html( $qrdata['total'] ) . '</Amount>'
+			. '<Amount>' . esc_html( strval( $qrdata['total'] ) ) . '</Amount>'
 			. '<CurrencyCode>' . esc_html( $qrdata['currency'] ) . '</CurrencyCode>'
 			. '<VariableSymbol>' . esc_html( $qrdata['variable_symbol'] ) . '</VariableSymbol>'
 			. '<PaymentNote>' . esc_html( $qrdata['payment_note'] ) . '</PaymentNote>'
@@ -499,7 +504,7 @@ class Plugin {
 					return [];
 				}
 
-				$imageData = $slovak ? "$parsed->PayBySquare" : "$parsed->QrPlatbaCz";
+				$imageData = strval( $slovak ? $parsed->PayBySquare : $parsed->QrPlatbaCz );
 
 				if ( false === file_put_contents( $path, base64_decode( $imageData ), LOCK_EX ) ) {
 					$this->logger->error( 'Unable to write QR code into file: ' . $path );
@@ -542,6 +547,6 @@ class Plugin {
 	 */
 	protected static function sanitize( $value ) {
 		// allow only alphanumeric characters (and uppercase lowercased ones).
-		return preg_replace( '/[^0-9A-Z]+/', '', strtoupper( $value ) );
+		return preg_replace( '/[^0-9A-Z]+/', '', strtoupper( $value ) ) ?? '';
 	}
 }
