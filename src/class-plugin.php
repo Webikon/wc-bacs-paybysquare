@@ -495,30 +495,41 @@ class Plugin {
 
 		switch ( $code ) {
 			case 200:
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				if ( $slovak && ! isset( $parsed->PayBySquare ) ) {
 					$this->logger->error( 'Response is missing paybysquare code.' );
 					return [];
 				}
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				if ( $czech && ! isset( $parsed->QrPlatbaCz ) ) {
 					$this->logger->error( 'Paybysquare: Response is missing qrplatbacz code.' );
 					return [];
 				}
 
-				$imageData = strval( $slovak ? $parsed->PayBySquare : $parsed->QrPlatbaCz );
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$base64_image_data = strval( $slovak ? $parsed->PayBySquare : $parsed->QrPlatbaCz );
 
-				if ( false === file_put_contents( $path, base64_decode( $imageData ), LOCK_EX ) ) {
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+				$raw_image_data = base64_decode( $base64_image_data );
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				if ( false === file_put_contents( $path, $raw_image_data, LOCK_EX ) ) {
 					$this->logger->error( 'Unable to write QR code into file: ' . $path );
 					return [];
 				}
 				break;
 			case 400:
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				if ( ! isset( $parsed->ErrorCode ) ) {
 					$this->logger->error( 'Request failed with code 400 without details.' );
 					return [];
 				}
-				if ( 'E601' !== "$parsed->ErrorCode" ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				if ( 'E601' !== strval( $parsed->ErrorCode ) ) {
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					$message = empty( $parsed->Message ) ? '' : ' "' . $parsed->Message . '"';
-					$detail  = empty( $parsed->Detail ) ? '' : ' (' . $parsed->Detail . ')';
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$detail = empty( $parsed->Detail ) ? '' : ' (' . $parsed->Detail . ')';
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					$this->logger->error( 'Request failed with code 400 with error ' . $parsed->ErrorCode . $message . $detail . '.' );
 					return [];
 				}
