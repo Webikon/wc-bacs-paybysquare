@@ -27,6 +27,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// declare compatibility with High-Performace Order Storage (HPOS).
+add_action(
+	'before_woocommerce_init',
+	function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	}
+);
+
 require __DIR__ . '/src/class-logger.php';
 require __DIR__ . '/src/class-plugin.php';
 Plugin::run( __FILE__ );
