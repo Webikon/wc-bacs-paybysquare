@@ -163,7 +163,7 @@ class Plugin {
 							function () {
 								echo '<div class="notice notice-warning is-dismissible"><p><b>'
 								. sprintf(
-									/* translators: %s field name */
+									/* translators: %s: field name */
 									esc_html__( 'Field "%s" does contain character, that is invalid for Czech QR code.', 'wc-bacs-paybysquare' ),
 									esc_html__( 'Beneficiary name', 'wc-bacs-paybysquare' )
 								)
@@ -171,7 +171,7 @@ class Plugin {
 								. esc_html__( 'If you are not using Czech QR code, you may safely ignore this warning.', 'wc-bacs-paybysquare' )
 								. '</p><p>'
 								. sprintf(
-									/* translators: %1$s valid digits, %2$s valid letters, %3$s valid symbols */
+									/* translators: 1: valid digits, 2: valid letters, 3: valid symbols */
 									esc_html__( 'Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s', 'wc-bacs-paybysquare' ),
 									'0..9',
 									'A..Z a..z',
