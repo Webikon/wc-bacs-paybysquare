@@ -42,9 +42,17 @@ class Plugin {
 	protected $bacs;
 
 	/**
+	 * Plugin logger.
+	 *
+	 * @var Logger
+	 */
+	protected $logger;
+
+	/**
 	 * Protected constructor.
 	 */
 	protected function __construct() {
+		$this->logger = new Logger();
 	}
 
 	/**
@@ -68,7 +76,7 @@ class Plugin {
 		if ( null === $this->bacs ) {
 			$available = \WC()->payment_gateways->payment_gateways();
 			if ( empty( $available['bacs'] ) ) {
-				trigger_error( 'Paybysquare: BACS payment gateway not available.', E_USER_NOTICE );
+				$this->logger->error( 'BACS payment gateway is not available' );
 				$this->bacs = false;
 			} else {
 				$this->bacs = $available['bacs'];
@@ -353,7 +361,7 @@ class Plugin {
 			}
 		}
 		if ( ! $bank_accounts ) {
-			trigger_error( 'Paybysquare: BACS payment gateway has no IBAN+BIC specified in account details.', E_USER_NOTICE );
+			$this->logger->warning( 'BACS payment gateway has no IBAN+BIC specified in account details.' );
 			return [];
 		}
 		// in auto mode, prefer bank accounts based on currency (SK* for EUR, CZ* for CZK).
@@ -383,12 +391,12 @@ class Plugin {
 
 		$wp_upload = wp_upload_dir();
 		if ( ! empty( $wp_upload['error'] ) ) {
-			trigger_error( 'Paybysquare: Searching for WordPress upload directory failed: ' . $wp_upload['error'], E_USER_NOTICE );
+			$this->logger->error( 'Searching for WordPress upload directory failed: ' . $wp_upload['error'] );
 			return [];
 		}
 		$beneficiary_name = strtoupper( $bacs->get_option( 'paybysquare_beneficiary' ) );
 		if ( $czech && preg_match( static::QRPLATBA_INVALID, $beneficiary_name ) ) {
-			trigger_error( 'Paybysquare: Invalid character detected in beneficiary name, cannot generage Czech QR code', E_USER_NOTICE );
+			$this->logger->error( 'Invalid character detected in beneficiary name, cannot generage Czech QR code' );
 			return [];
 		}
 
@@ -410,7 +418,7 @@ class Plugin {
 		}
 
 		if ( ! wp_mkdir_p( dirname( $path ) ) ) {
-			trigger_error( 'Paybysquare: Unable to initialize directory storage for images: ' . dirname( $path ), E_USER_NOTICE );
+			$this->logger->error( 'Unable to initialize directory storage for images: ' . dirname( $path ) );
 			return [];
 		}
 
@@ -458,59 +466,59 @@ class Plugin {
 		);
 
 		if ( is_wp_error( $result ) ) {
-			trigger_error( 'Paybysquare: Request failed with message "' . $result->get_error_message() . '".', E_USER_NOTICE );
+			$this->logger->error( 'Request failed with message "' . $result->get_error_message() . '".' );
 			return [];
 		}
 
 		if ( empty( $result['response']['code'] ) ) {
-			trigger_error( 'Paybysquare: Request failed without a code.', E_USER_NOTICE );
+			$this->logger->error( 'Request failed without a code.' );
 			return [];
 		}
 
 		$code   = $result['response']['code'];
 		$parsed = simplexml_load_string( $result['body'] );
 		if ( false === $parsed ) {
-			trigger_error( 'Paybysquare: Response is not valid XML (code = ' . $code . ').', E_USER_NOTICE );
+			$this->logger->error( 'Response is not valid XML (code = ' . $code . ').' );
 			return [];
 		}
 
 		switch ( $code ) {
 			case 200:
 				if ( $slovak && ! isset( $parsed->PayBySquare ) ) {
-					trigger_error( 'Paybysquare: Response is missing paybysquare code.', E_USER_NOTICE );
+					$this->logger->error( 'Response is missing paybysquare code.' );
 					return [];
 				}
 				if ( $czech && ! isset( $parsed->QrPlatbaCz ) ) {
-					trigger_error( 'Paybysquare: Response is missing qrplatbacz code.', E_USER_NOTICE );
+					$this->logger->error( 'Paybysquare: Response is missing qrplatbacz code.' );
 					return [];
 				}
 
 				$imageData = $slovak ? "$parsed->PayBySquare" : "$parsed->QrPlatbaCz";
 
 				if ( false === file_put_contents( $path, base64_decode( $imageData ), LOCK_EX ) ) {
-					trigger_error( 'Paybysquare: Unable to write QR code into file: ' . $path, E_USER_NOTICE );
+					$this->logger->error( 'Unable to write QR code into file: ' . $path );
 					return [];
 				}
 				break;
 			case 400:
 				if ( ! isset( $parsed->ErrorCode ) ) {
-					trigger_error( 'Paybysquare: Request failed with code 400 without details.', E_USER_NOTICE );
+					$this->logger->error( 'Request failed with code 400 without details.' );
 					return [];
 				}
 				if ( 'E601' !== "$parsed->ErrorCode" ) {
 					$message = empty( $parsed->Message ) ? '' : ' "' . $parsed->Message . '"';
 					$detail  = empty( $parsed->Detail ) ? '' : ' (' . $parsed->Detail . ')';
-					trigger_error( 'Paybysquare: Request failed with code 400 with error ' . $parsed->ErrorCode . $message . $detail . '.', E_USER_NOTICE );
+					$this->logger->error( 'Request failed with code 400 with error ' . $parsed->ErrorCode . $message . $detail . '.' );
 					return [];
 				}
 				update_option( 'woocommerce_bacs_paybysquare_limit_exceeded', gmdate( 'Ym' ) );
-				trigger_error( 'Paybysquare: Montly limit was reached (HTTP=400 ErrorCode=E601).', E_USER_NOTICE );
+				$this->logger->error( 'Montly limit was reached (HTTP=400 ErrorCode=E601).' );
 				return [];
 			case 401:
-				trigger_error( 'Paybysquare: Username and Password pair does not exists or is disabled.', E_USER_NOTICE );
+				$this->logger->error( 'Username and Password pair does not exists or is disabled.' );
 				return [];
 			default:
-				trigger_error( 'Paybysquare: Request failed with code "' . $code . '".', E_USER_NOTICE );
+				$this->logger->error( 'Request failed with code "' . $code . '".' );
 				return [];
 		}
 
