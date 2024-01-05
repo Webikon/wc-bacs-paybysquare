@@ -1,0 +1,25 @@
+name: Pipeline
+run-name: ${{ github.actor }} is running the pipeline
+on:
+  push:
+    branches: [master]
+  pull_request: {}
+jobs:
+  test:
+    name: Automated Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo Checkout
+        uses: actions/checkout@v4
+      - name: PHP Syntax
+        run: jobs/php-syntax.sh
+      - name: Composer Install
+        uses: php-actions/composer@v6
+        with:
+          args: --no-scripts
+      - name: Code Standards
+        run: jobs/code-standards.sh
+      - name: Static Analysis
+        run: jobs/static-analysis.sh
+      - name: Translation Updates
+        run: jobs/update-translations.sh && git diff --exit-code
