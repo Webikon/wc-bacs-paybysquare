@@ -114,6 +114,18 @@ class Plugin {
 	}
 
 	/**
+	 * Get setting value.
+	 *
+	 * @param string $option_key the option key.
+	 *
+	 * @return string
+	 */
+	public function get_option( $option_key ) {
+		$bacs = $this->get_bacs();
+		return $bacs ? $bacs->get_option( "paybysquare_$option_key" ) : '';
+	}
+
+	/**
 	 * Register settings link to WordPress plugin list.
 	 *
 	 * @param array<string, string> $links existing plugin links.
@@ -316,9 +328,10 @@ class Plugin {
 	 * @return string
 	 */
 	public function filter_gateway_title( $title, $gateway_id ) {
-		$bacs = $this->get_bacs();
-		if ( 'bacs' === $gateway_id && $bacs && $bacs->get_option( 'paybysquare_information' ) ) {
-			$title .= rtrim( ' ' . ltrim( $bacs->get_option( 'paybysquare_information' ) ) );
+		$bacs        = $this->get_bacs();
+		$information = trim( $this->get_option( 'information' ) );
+		if ( 'bacs' === $gateway_id && $bacs && $information ) {
+			$title .= ' ' . $information;
 		}
 		return $title;
 	}
@@ -349,7 +362,7 @@ class Plugin {
 		if ( ! $bacs ) {
 			return [];
 		}
-		$display = $bacs->get_option( 'paybysquare_display' );
+		$display = $this->get_option( 'display' );
 		$slovak  = 'slovak' === $display || 'auto' === $display && 'EUR' === $order->get_currency();
 		$czech   = 'czech' === $display || 'auto' === $display && 'CZK' === $order->get_currency();
 		if ( ! $slovak && ! $czech ) {
@@ -400,7 +413,7 @@ class Plugin {
 			$this->logger->error( 'Searching for WordPress upload directory failed: ' . $wp_upload['error'] );
 			return [];
 		}
-		$beneficiary_name = strtoupper( $bacs->get_option( 'paybysquare_beneficiary' ) );
+		$beneficiary_name = strtoupper( $this->get_option( 'beneficiary' ) );
 		if ( $czech && preg_match( static::QRPLATBA_INVALID, $beneficiary_name ) ) {
 			$this->logger->error( 'Invalid character detected in beneficiary name, cannot generage Czech QR code' );
 			return [];
@@ -434,8 +447,8 @@ class Plugin {
 		}
 
 		$xml = '<BySquareXmlDocuments xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-			. '<Username>' . esc_html( $bacs->get_option( 'paybysquare_username' ) ) . '</Username>'
-			. '<Password>' . esc_html( $bacs->get_option( 'paybysquare_password' ) ) . '</Password>'
+			. '<Username>' . esc_html( $this->get_option( 'username' ) ) . '</Username>'
+			. '<Password>' . esc_html( $this->get_option( 'password' ) ) . '</Password>'
 			. '<CountryOptions>'
 			. '<Slovak>' . esc_html( $slovak ? 'true' : 'false' ) . '</Slovak>'
 			. '<Czech>' . esc_html( $czech ? 'true' : 'false' ) . '</Czech>'
