@@ -2,7 +2,7 @@
 # This file is distributed under the GPLv2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: PAY by square for WooCommerce 2.0.0\n"
+"Project-Id-Version: PAY by square for WooCommerce 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-bacs-paybysquare\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,120 +11,139 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2023-12-18T16:08:30+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wc-bacs-paybysquare\n"
 
 #. Plugin Name of the plugin
+#: wc-bacs-paybysquare.php
 msgid "PAY by square for WooCommerce"
 msgstr ""
 
 #. Description of the plugin
+#: wc-bacs-paybysquare.php
 msgid "Adds a payment QR code on summary page of direct bank transfer"
 msgstr ""
 
 #. Author of the plugin
+#: wc-bacs-paybysquare.php
 msgid "Webikon (Matej Kravjar)"
 msgstr ""
 
 #. Author URI of the plugin
+#: wc-bacs-paybysquare.php
 msgid "https://webikon.sk"
 msgstr ""
 
-#: src/class-plugin.php:134
+#: src/class-plugin.php:207
 msgid "Settings"
 msgstr ""
 
-#: src/class-plugin.php:149
+#: src/class-plugin.php:223
 msgid "PAY by square Settings"
 msgstr ""
 
-#: src/class-plugin.php:154
-#: src/class-plugin.php:168
+#: src/class-plugin.php:261
+#: src/class-settings.php:36
+msgid "PAY by square"
+msgstr ""
+
+#: src/class-plugin.php:347
+msgid "For convenient payment, scan this QR code with your banking app:"
+msgstr ""
+
+#: src/class-settings.php:37
+msgid "Displays QR codes for convenient direct bank transfer payments"
+msgstr ""
+
+#: src/class-settings.php:53
+#: src/class-settings.php:67
 msgid "Beneficiary name"
 msgstr ""
 
-#: src/class-plugin.php:156
+#: src/class-settings.php:55
 msgid "Name of person or organization receiving money"
 msgstr ""
 
 #. translators: %s: field name
-#: src/class-plugin.php:167
+#: src/class-settings.php:66
+#, php-format
 msgid "Field \"%s\" does contain character, that is invalid for Czech QR code."
 msgstr ""
 
-#: src/class-plugin.php:171
+#: src/class-settings.php:70
 msgid "If you are not using Czech QR code, you may safely ignore this warning."
 msgstr ""
 
 #. translators: 1: valid digits, 2: valid letters, 3: valid symbols
-#: src/class-plugin.php:175
+#: src/class-settings.php:74
+#, php-format
 msgid "Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s"
 msgstr ""
 
-#: src/class-plugin.php:188
+#: src/class-settings.php:87
 msgid "Username"
 msgstr ""
 
 #. translators: %s: service name
-#: src/class-plugin.php:191
+#: src/class-settings.php:90
+#, php-format
 msgid "Your Username for %s service"
 msgstr ""
 
-#: src/class-plugin.php:196
+#: src/class-settings.php:95
 msgid "Password"
 msgstr ""
 
 #. translators: %s: service name
-#: src/class-plugin.php:199
+#: src/class-settings.php:98
+#, php-format
 msgid "Your Password for %s service"
 msgstr ""
 
-#: src/class-plugin.php:204
+#: src/class-settings.php:103
 msgid "Checkout information"
 msgstr ""
 
-#: src/class-plugin.php:206
+#: src/class-settings.php:105
 msgid "Text appended to your BACS title, advertising QR code availability"
 msgstr ""
 
-#: src/class-plugin.php:207
+#: src/class-settings.php:106
 msgid "(payment QR code)"
 msgstr ""
 
-#: src/class-plugin.php:211
+#: src/class-settings.php:110
 msgid "Display QR code"
 msgstr ""
 
-#: src/class-plugin.php:212
+#: src/class-settings.php:111
 msgid "Setting controlling which type of QR should be displayed"
 msgstr ""
 
-#: src/class-plugin.php:215
+#: src/class-settings.php:114
 msgid "PAY by square (Slovak)"
 msgstr ""
 
-#: src/class-plugin.php:216
+#: src/class-settings.php:115
 msgid "QR platba (Czech)"
 msgstr ""
 
-#: src/class-plugin.php:217
+#: src/class-settings.php:116
 msgid "Automatic (based on currency)"
 msgstr ""
 
-#: src/class-plugin.php:244
+#: src/class-settings.php:142
 msgid "Your limit of generated QR codes was depleted"
 msgstr ""
 
 #. translators: %s: service link
-#: src/class-plugin.php:246
+#: src/class-settings.php:144
+#, php-format
 msgid "To generate more this month, you need to upgrade your program at %s"
 msgstr ""
 
 #. translators: %s: service link
-#: src/class-plugin.php:249
+#: src/class-settings.php:147
+#, php-format
 msgid "To learn more about the service, please visit %s"
-msgstr ""
-
-#: src/class-plugin.php:335
-msgid "For convenient payment, scan this QR code with your banking app:"
 msgstr ""
