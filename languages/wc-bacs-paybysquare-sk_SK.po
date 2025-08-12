@@ -8,131 +8,144 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2023-12-18 16:08+0100\n"
-"PO-Revision-Date: 2023-12-18 16:11+0100\n"
+"PO-Revision-Date: 2025-07-25 15:43+0200\n"
 "Language: sk\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:2c,1;_ex:2c,1;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:2c,1;esc_html__;esc_html_e;esc_html_x:2c,1;_n_noop:1,2;_nx_noop:3c,1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: src/class-plugin.php:134
+#: src/class-plugin.php:207
 msgid "Settings"
 msgstr "Nastavenia"
 
-#: src/class-plugin.php:149
+#: src/class-plugin.php:223
 msgid "PAY by square Settings"
 msgstr "Nastavenia PAY by square"
 
-#: src/class-plugin.php:154
-#: src/class-plugin.php:168
+#: src/class-settings.php:53
+#: src/class-settings.php:67
 msgid "Beneficiary name"
 msgstr "Príjemca platby"
 
-#: src/class-plugin.php:156
+#: src/class-settings.php:55
 msgid "Name of person or organization receiving money"
 msgstr "Meno osoby alebo názov organizácie prijímajúcej peniaze"
 
 #. translators: %s: field name
-#: src/class-plugin.php:167
+#: src/class-settings.php:66
 #, php-format
 msgid "Field \"%s\" does contain character, that is invalid for Czech QR code."
 msgstr "Pole „%s“ obsahuje znak, ktorý nie je povolený pre český QR kód."
 
-#: src/class-plugin.php:171
+#: src/class-settings.php:70
 msgid "If you are not using Czech QR code, you may safely ignore this warning."
 msgstr "Pokiaľ český QR kód nepoužívate, môžte toto upozornenie pokojne ignorovať."
 
 #. translators: 1: valid digits, 2: valid letters, 3: valid symbols
-#: src/class-plugin.php:175
+#: src/class-settings.php:74
 #, php-format
 msgid "Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s"
 msgstr "Povolené znaky sú číslice %1$s, písmená %2$s, medzera, a špeciálne znaky %3$s"
 
-#: src/class-plugin.php:188
+#: src/class-settings.php:87
 msgid "Username"
 msgstr "Používateľské meno"
 
 #. translators: %s: service name
-#: src/class-plugin.php:191
+#: src/class-settings.php:90
 #, php-format
 msgid "Your Username for %s service"
 msgstr "Používateľské meno pre službu %s"
 
-#: src/class-plugin.php:196
+#: src/class-settings.php:95
 msgid "Password"
 msgstr "Heslo"
 
 #. translators: %s: service name
-#: src/class-plugin.php:199
+#: src/class-settings.php:98
 #, php-format
 msgid "Your Password for %s service"
 msgstr "Heslo pre službu %s"
 
-#: src/class-plugin.php:204
+#: src/class-settings.php:103
 msgid "Checkout information"
 msgstr "Informácia v pokladni"
 
-#: src/class-plugin.php:206
+#: src/class-settings.php:105
 msgid "Text appended to your BACS title, advertising QR code availability"
 msgstr "Text, ktorý sa zobrazí pri názve priamej platby na účet, informujúci o prítomnosti QR kódu"
 
-#: src/class-plugin.php:207
+#: src/class-settings.php:106
 msgid "(payment QR code)"
 msgstr "(platobný QR kód)"
 
-#: src/class-plugin.php:211
+#: src/class-settings.php:110
 msgid "Display QR code"
 msgstr "Zobraziť QR kód"
 
-#: src/class-plugin.php:212
+#: src/class-settings.php:111
 msgid "Setting controlling which type of QR should be displayed"
 msgstr "Nastavenie určuje ktorý QR kód bude zobrazený zákazníkovi"
 
-#: src/class-plugin.php:215
+#: src/class-settings.php:114
 msgid "PAY by square (Slovak)"
 msgstr "PAY by square (slovenský)"
 
-#: src/class-plugin.php:216
+#: src/class-settings.php:115
 msgid "QR platba (Czech)"
 msgstr "QR Platba (český)"
 
-#: src/class-plugin.php:217
+#: src/class-settings.php:116
 msgid "Automatic (based on currency)"
 msgstr "Automaticky (na základe meny)"
 
-#: src/class-plugin.php:244
+#: src/class-settings.php:142
 msgid "Your limit of generated QR codes was depleted"
 msgstr "Prekročili ste váš limit generovaných QR kódov"
 
 #. translators: %s: service link
-#: src/class-plugin.php:246
+#: src/class-settings.php:144
 #, php-format
 msgid "To generate more this month, you need to upgrade your program at %s"
 msgstr "Na to, aby ste tento mesiac mohli vygenerovať ďalšie, potrebujete prejsť na vyšší program na stránke %s"
 
 #. translators: %s: service link
-#: src/class-plugin.php:249
+#: src/class-settings.php:147
 #, php-format
 msgid "To learn more about the service, please visit %s"
 msgstr "Pre viac informácií o službe, prosím navštívte %s"
 
-#: src/class-plugin.php:335
+#: src/class-plugin.php:347
 msgid "For convenient payment, scan this QR code with your banking app:"
 msgstr "Pre jednoduchú úhradu naskenujte tento QR kód mobilnou aplikáciou vašej banky:"
 
 #. Author of the plugin
+#: wc-bacs-paybysquare.php
 msgid "Webikon (Matej Kravjar)"
 msgstr ""
 
 #. Author URI of the plugin
+#: wc-bacs-paybysquare.php
 msgid "https://webikon.sk"
 msgstr ""
 
 #. Plugin Name of the plugin
+#: wc-bacs-paybysquare.php
 msgid "PAY by square for WooCommerce"
 msgstr "PAY by square pre WooCommerce"
 
 #. Description of the plugin
+#: wc-bacs-paybysquare.php
 msgid "Adds a payment QR code on summary page of direct bank transfer"
 msgstr "Pridáva platobný QR kód na sumarizačnú stránku platby prevodom"
+
+#: src/class-plugin.php:261
+#: src/class-settings.php:36
+msgid "PAY by square"
+msgstr ""
+
+#: src/class-settings.php:37
+msgid "Displays QR codes for convenient direct bank transfer payments"
+msgstr "Zobrazuje QR kódy pre pohodlné platby pomocou bankových prevodov"

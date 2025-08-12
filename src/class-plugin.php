@@ -18,7 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Main plugin class that contains all logic.
  */
 class Plugin {
-	const QRPLATBA_INVALID = ';[^0-9A-Za-z $%+./:-];';
+	/**
+	 * Identifier for integration that stores settings
+	 *
+	 * @var string
+	 */
+	const INTEGRATION_ID = 'paybysquare';
 
 	/**
 	 * Singleton instance.
@@ -42,6 +47,13 @@ class Plugin {
 	protected $bacs;
 
 	/**
+	 * PAY by square integration data.
+	 *
+	 * @var Settings|false|null
+	 */
+	protected $pbsq;
+
+	/**
 	 * Plugin logger.
 	 *
 	 * @var Logger
@@ -49,10 +61,27 @@ class Plugin {
 	protected $logger;
 
 	/**
+	 * Link to plugin settings page.
+	 *
+	 * @var string
+	 */
+	protected $settings_link;
+
+	/**
 	 * Protected constructor.
 	 */
 	protected function __construct() {
-		$this->logger = new Logger();
+		$this->logger        = new Logger();
+		$this->settings_link = admin_url(
+			add_query_arg(
+				[
+					'page'    => 'wc-settings',
+					'tab'     => 'integration',
+					'section' => static::INTEGRATION_ID,
+				],
+				'admin.php'
+			)
+		);
 	}
 
 	/**
@@ -75,14 +104,32 @@ class Plugin {
 	public function get_bacs() {
 		if ( null === $this->bacs ) {
 			$available = \WC()->payment_gateways()->payment_gateways();
-			if ( empty( $available['bacs'] ) ) {
+			if ( isset( $available['bacs'] ) && $available['bacs'] instanceof \WC_Gateway_BACS ) {
+				$this->bacs = $available['bacs'];
+			} else {
 				$this->logger->error( 'BACS payment gateway is not available' );
 				$this->bacs = false;
-			} else {
-				$this->bacs = $available['bacs'];
 			}
 		}
 		return $this->bacs;
+	}
+
+	/**
+	 * Get PAY by square integration data.
+	 *
+	 * @return Settings|false
+	 */
+	public function get_pbsq() {
+		if ( null === $this->pbsq ) {
+			$pbsq = WC()->integrations->get_integration( static::INTEGRATION_ID );
+			if ( $pbsq instanceof Settings ) {
+				$this->pbsq = $pbsq;
+			} else {
+				$this->logger->error( 'PAY by square integration is not available' );
+				$this->pbsq = false;
+			}
+		}
+		return $this->pbsq;
 	}
 
 	/**
@@ -93,6 +140,7 @@ class Plugin {
 	 */
 	public static function run( $file ) {
 		$plugin = static::get_instance();
+		add_action( 'plugins_loaded', [ $plugin, 'preinit' ] );
 		add_action( 'init', [ $plugin, 'initialize' ] );
 		$plugin_basename = plugin_basename( $file );
 		add_filter( "plugin_action_links_{$plugin_basename}", [ $plugin, 'add_settings_link' ] );
@@ -105,6 +153,16 @@ class Plugin {
 	}
 
 	/**
+	 * Before plugin initialization.
+	 *
+	 * @return void
+	 */
+	public function preinit() {
+		$plugin = static::get_instance();
+		add_filter( 'woocommerce_integrations', [ $plugin, 'register_integration' ] );
+	}
+
+	/**
 	 * Plugin initialization.
 	 *
 	 * @return void
@@ -114,24 +172,39 @@ class Plugin {
 	}
 
 	/**
+	 * Register WooCommerce integration.
+	 *
+	 * @param string[] $integrations existing integrations.
+	 *
+	 * @return string[]
+	 */
+	public function register_integration( $integrations ) {
+		require __DIR__ . '/class-settings.php';
+		$integrations[] = Settings::class;
+		return $integrations;
+	}
+
+	/**
+	 * Get setting value.
+	 *
+	 * @param string $option_key the option key.
+	 *
+	 * @return string
+	 */
+	public function get_option( $option_key ) {
+		$pbsq = $this->get_pbsq();
+		return $pbsq ? $pbsq->get_option( $option_key ) : '';
+	}
+
+	/**
 	 * Register settings link to WordPress plugin list.
 	 *
 	 * @param array<string, string> $links existing plugin links.
 	 * @return array<string, string>
 	 */
 	public function add_settings_link( $links ) {
-		$admin_url = admin_url(
-			add_query_arg(
-				[
-					'page'    => 'wc-settings',
-					'tab'     => 'checkout',
-					'section' => 'bacs',
-				],
-				'admin.php'
-			)
-		) . '#woocommerce_bacs_paybysquare';
 		return array_merge(
-			[ 'settings' => '<a href="' . esc_attr( $admin_url ) . '">' . esc_html__( 'Settings', 'wc-bacs-paybysquare' ) . '</a>' ],
+			[ 'settings' => '<a href="' . esc_attr( $this->settings_link ) . '">' . esc_html__( 'Settings', 'wc-bacs-paybysquare' ) . '</a>' ],
 			$links
 		);
 	}
@@ -143,83 +216,26 @@ class Plugin {
 	 * @return array<string, array<string, mixed>>
 	 */
 	public function filter_form_fields( $fields ) {
-		$pbsq_text = 'app.bysquare.com';
-		return $fields + [
-			'paybysquare'             => [
-				'title'   => __( 'PAY by square Settings', 'wc-bacs-paybysquare' ),
-				'type'    => 'title',
-				'default' => '',
-			],
-			'paybysquare_beneficiary' => [
-				'title'             => __( 'Beneficiary name', 'wc-bacs-paybysquare' ),
-				'type'              => 'text',
-				'description'       => __( 'Name of person or organization receiving money', 'wc-bacs-paybysquare' ),
-				'default'           => '',
-				'desc_tip'          => true,
-				'sanitize_callback' => function ( $value ) {
-					if ( preg_match( static::QRPLATBA_INVALID, $value ) ) {
-						add_action(
-							'admin_notices',
-							function () {
-								echo '<div class="notice notice-warning is-dismissible"><p><b>'
-								. sprintf(
-									/* translators: %s: field name */
-									esc_html__( 'Field "%s" does contain character, that is invalid for Czech QR code.', 'wc-bacs-paybysquare' ),
-									esc_html__( 'Beneficiary name', 'wc-bacs-paybysquare' )
-								)
-								. '</b></p><p>'
-								. esc_html__( 'If you are not using Czech QR code, you may safely ignore this warning.', 'wc-bacs-paybysquare' )
-								. '</p><p>'
-								. sprintf(
-									/* translators: 1: valid digits, 2: valid letters, 3: valid symbols */
-									esc_html__( 'Valid characters are digits %1$s, letters %2$s, a space, and symbols %3$s', 'wc-bacs-paybysquare' ),
-									'0..9',
-									'A..Z a..z',
-									'$ % + - . / :'
-								)
-								. '</p></div>';
-							}
-						);
-					}
-					return $value;
-				},
-			],
-			'paybysquare_username'    => [
-				'title'       => __( 'Username', 'wc-bacs-paybysquare' ),
-				'type'        => 'text',
-				/* translators: %s: service name */
-				'description' => sprintf( __( 'Your Username for %s service', 'wc-bacs-paybysquare' ), $pbsq_text ),
-				'default'     => '',
-				'desc_tip'    => true,
-			],
-			'paybysquare_password'    => [
-				'title'       => __( 'Password', 'wc-bacs-paybysquare' ),
-				'type'        => 'password',
-				/* translators: %s: service name */
-				'description' => sprintf( __( 'Your Password for %s service', 'wc-bacs-paybysquare' ), $pbsq_text ),
-				'default'     => '',
-				'desc_tip'    => true,
-			],
-			'paybysquare_information' => [
-				'title'       => __( 'Checkout information', 'wc-bacs-paybysquare' ),
-				'type'        => 'text',
-				'description' => __( 'Text appended to your BACS title, advertising QR code availability', 'wc-bacs-paybysquare' ),
-				'default'     => __( '(payment QR code)', 'wc-bacs-paybysquare' ),
-				'desc_tip'    => true,
-			],
-			'paybysquare_display'     => [
-				'title'       => __( 'Display QR code', 'wc-bacs-paybysquare' ),
-				'description' => __( 'Setting controlling which type of QR should be displayed', 'wc-bacs-paybysquare' ),
-				'type'        => 'select',
-				'options'     => [
-					'slovak' => __( 'PAY by square (Slovak)', 'wc-bacs-paybysquare' ),
-					'czech'  => __( 'QR platba (Czech)', 'wc-bacs-paybysquare' ),
-					'auto'   => __( 'Automatic (based on currency)', 'wc-bacs-paybysquare' ),
+		$pbsq = $this->get_pbsq();
+		if ( $pbsq && ! is_array( get_option( $pbsq->get_option_key() ) ) ) {
+			$additional = [
+				'paybysquare' => [
+					'title' => __( 'PAY by square Settings', 'wc-bacs-paybysquare' ),
+					'type'  => 'title',
 				],
-				'default'     => 'auto',
-				'desc_tip'    => true,
-			],
-		];
+			];
+			foreach ( $pbsq->form_fields as $field_id => $field_data ) {
+				/**
+				 * The settings field definition.
+				 *
+				 * @var array<string, mixed>
+				 */
+				$field                                    = $field_data;
+				$additional[ 'paybysquare_' . $field_id ] = $field;
+			}
+			$fields += $additional;
+		}
+		return $fields;
 	}
 
 	/**
@@ -228,27 +244,22 @@ class Plugin {
 	 * @return void
 	 */
 	public function add_settings_note() {
+		/**
+		 * Current screen.
+		 *
+		 * @var \WP_Screen|null
+		 */
+		global $current_screen;
+		global $current_tab;
 		global $current_section;
 
-		if ( 'bacs' === $current_section ) {
-			$pbsq_link    = '<a href="https://app.bysquare.com" target="_blank">app.bysquare.com</a>';
-			$allowed_html = [
-				'a' => [
-					'href'   => true,
-					'target' => true,
-				],
-			];
-			echo '<p id="woocommerce_bacs_paybysquare_note">';
-			$limit_exceeded = get_option( 'woocommerce_bacs_paybysquare_limit_exceeded' );
-			if ( $limit_exceeded && gmdate( 'Ym' ) === $limit_exceeded ) {
-				echo '<span style="font-weight: bold; color: #c00">' . esc_html__( 'Your limit of generated QR codes was depleted', 'wc-bacs-paybysquare' ) . '</span><br>';
-				/* translators: %s: service link */
-				printf( esc_html__( 'To generate more this month, you need to upgrade your program at %s', 'wc-bacs-paybysquare' ), wp_kses( $pbsq_link, $allowed_html ) );
-			} else {
-				/* translators: %s: service link */
-				printf( esc_html__( 'To learn more about the service, please visit %s', 'wc-bacs-paybysquare' ), wp_kses( $pbsq_link, $allowed_html ) );
-			}
-			echo '</p>';
+		// Provide the note + link to the new settings on pages were the settings were before.
+		if ( $current_screen && 'woocommerce_page_wc-settings' === $current_screen->id && 'checkout' === $current_tab && ( 'bacs' === $current_section || 'offline' === $current_section ) ) {
+			echo '<p>' . sprintf(
+				/* translators: %s: link to new settings page */
+				esc_html__( 'The PAY by square settings were moved to %s' ),
+				'<a href="' . esc_attr( $this->settings_link ) . '">' . esc_html__( 'Integration', 'woocommerce' ) . ' &gt; ' . esc_html__( 'PAY by square', 'wc-bacs-paybysquare' ) . '</a>'
+			) . '</p>';
 		}
 	}
 
@@ -316,9 +327,10 @@ class Plugin {
 	 * @return string
 	 */
 	public function filter_gateway_title( $title, $gateway_id ) {
-		$bacs = $this->get_bacs();
-		if ( 'bacs' === $gateway_id && $bacs && $bacs->get_option( 'paybysquare_information' ) ) {
-			$title .= rtrim( ' ' . ltrim( $bacs->get_option( 'paybysquare_information' ) ) );
+		$bacs        = $this->get_bacs();
+		$information = trim( $this->get_option( 'information' ) );
+		if ( 'bacs' === $gateway_id && $bacs && $information ) {
+			$title .= ' ' . $information;
 		}
 		return $title;
 	}
@@ -349,16 +361,22 @@ class Plugin {
 		if ( ! $bacs ) {
 			return [];
 		}
-		$display = $bacs->get_option( 'paybysquare_display' );
-		$slovak  = 'slovak' === $display || 'auto' === $display && 'EUR' === $order->get_currency();
-		$czech   = 'czech' === $display || 'auto' === $display && 'CZK' === $order->get_currency();
+		$display = $this->get_option( 'display' );
+		$slovak  = 'slovak' === $display || ( 'auto' === $display && 'EUR' === $order->get_currency() );
+		$czech   = 'czech' === $display || ( 'auto' === $display && 'CZK' === $order->get_currency() );
 		if ( ! $slovak && ! $czech ) {
 			return [];
 		}
 		$bank_accounts = [];
-		foreach ( $bacs->account_details as $bank_account ) {
-			$iban = static::sanitize( $bank_account['iban'] );
-			$bic  = static::sanitize( $bank_account['bic'] );
+		foreach ( $bacs->account_details as $account ) {
+			/**
+			 * Bank account properties.
+			 *
+			 * @var array{iban: string, bic: string}
+			 */
+			$bank_account = $account;
+			$iban         = static::sanitize( $bank_account['iban'] );
+			$bic          = static::sanitize( $bank_account['bic'] );
 			if ( $iban && $bic ) {
 				$bank_accounts[] = [
 					'iban' => $iban,
@@ -381,13 +399,13 @@ class Plugin {
 				$bank_accounts = array_merge(
 					array_filter(
 						$bank_accounts,
-						function ( $account ) use( $iban_prefix ) {
+						function ( $account ) use ( $iban_prefix ) {
 							return 0 === strncmp( $iban_prefix, $account['iban'], 2 );
 						}
 					),
 					array_filter(
 						$bank_accounts,
-						function ( $account ) use( $iban_prefix ) {
+						function ( $account ) use ( $iban_prefix ) {
 							return 0 !== strncmp( $iban_prefix, $account['iban'], 2 );
 						}
 					)
@@ -400,8 +418,8 @@ class Plugin {
 			$this->logger->error( 'Searching for WordPress upload directory failed: ' . $wp_upload['error'] );
 			return [];
 		}
-		$beneficiary_name = strtoupper( $bacs->get_option( 'paybysquare_beneficiary' ) );
-		if ( $czech && preg_match( static::QRPLATBA_INVALID, $beneficiary_name ) ) {
+		$beneficiary_name = strtoupper( $this->get_option( 'beneficiary' ) );
+		if ( $czech && preg_match( Settings::QRPLATBA_INVALID, $beneficiary_name ) ) {
 			$this->logger->error( 'Invalid character detected in beneficiary name, cannot generage Czech QR code' );
 			return [];
 		}
@@ -434,8 +452,8 @@ class Plugin {
 		}
 
 		$xml = '<BySquareXmlDocuments xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-			. '<Username>' . esc_html( $bacs->get_option( 'paybysquare_username' ) ) . '</Username>'
-			. '<Password>' . esc_html( $bacs->get_option( 'paybysquare_password' ) ) . '</Password>'
+			. '<Username>' . esc_html( $this->get_option( 'username' ) ) . '</Username>'
+			. '<Password>' . esc_html( $this->get_option( 'password' ) ) . '</Password>'
 			. '<CountryOptions>'
 			. '<Slovak>' . esc_html( $slovak ? 'true' : 'false' ) . '</Slovak>'
 			. '<Czech>' . esc_html( $czech ? 'true' : 'false' ) . '</Czech>'

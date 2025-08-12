@@ -3,7 +3,7 @@ Contributors: webikon, kravco, johnnypea, martinkrcho
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 6.4.2
+Tested up to: 6.8.2
 Requires PHP: 7.2
 Stable tag: trunk
 License: GPLv2 or later
@@ -24,12 +24,13 @@ Plugin Pay by Square podporuje slovenský formát QR kódu pre platbu a aj česk
 1. Pripravte si Váš eshop na platforme WooCommerce.
 2. Zaregistrujte sa na stránke app.bysquare.com.
 3. Nainštalujte a aktivujte si plugin Pay by Square (Pluginy -> Pridať nový -> Nahrať plugin)
-4. Nastavte si plugin (WooCommerce -> Platby -> Spravovať) nasledovne:
-	a) Povoľte prevod na bankový účet
+4. Nastavte si parametre platby na účet (WooCommerce -> Platby -> Offline platby):
+	a) Povoľte priamy prevod na bankový účet a prejdite do nastavení (Spravovať)
 	b) Vložte údaje minimálne jedného bankového účtu – údaje IBAN a BIC sú povinné
-	c) Príjemca platby – meno, ktoré ste pri registrácii uviedli ako Meno kontaktnej osoby
-	d) Používateľské meno a heslo – údaje, pod ktorými sa prihlasujete na app.bysquare.com – používateľské meno je v tvare emailu
-	e) Ostatné položky v nastaveniach môžete upraviť podľa Vašich preferencií
+5. Nastavte si parametre generovania QR kódu (WooCommerce -> Nastavenia -> Integrácia -> PAY by square)
+	a) Príjemca platby – meno, ktoré ste pri registrácii uviedli ako Meno kontaktnej osoby
+	b) Používateľské meno a heslo – údaje, pod ktorými sa prihlasujete na app.bysquare.com – používateľské meno je v tvare emailu
+	c) Ostatné položky v nastaveniach môžete upraviť podľa Vašich preferencií
 5. Vykonajte testovaciu objednávku a skontrolujte si zobrazenie QR kódu po odoslaní objednávky a v emaile, ktorý príde zákazníkovi.
 
 == Frequently Asked Questions ==
@@ -49,6 +50,8 @@ Ak využívate na odosielanie emailov nejaký SMTP plugin, overte si, že použ�
 
 == Changelog ==
 
+= 3.0.0 =
+* Presunutie nastavení na samostatnú stránku (Integrácia > PAY by square)
 
 = 2.0.0 =
 * Deklarovanie podpory pre WooCommerce High-Performace Order Storage (HPOS)
