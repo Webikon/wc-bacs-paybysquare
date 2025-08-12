@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-18 16:08+0100\n"
-"PO-Revision-Date: 2025-07-25 15:43+0200\n"
 "Last-Translator: Matej Kravjar <matej.kravjar@gmail.com>\n"
 "Language-Team: \n"
-"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-12-18 16:08+0100\n"
+"PO-Revision-Date: 2025-07-25 15:43+0200\n"
+"Language: sk\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: ..\n"
@@ -24,7 +24,8 @@ msgstr "Nastavenia"
 msgid "PAY by square Settings"
 msgstr "Nastavenia PAY by square"
 
-#: src/class-settings.php:53 src/class-settings.php:67
+#: src/class-settings.php:53
+#: src/class-settings.php:67
 msgid "Beneficiary name"
 msgstr "Príjemca platby"
 
@@ -140,7 +141,8 @@ msgstr "PAY by square pre WooCommerce"
 msgid "Adds a payment QR code on summary page of direct bank transfer"
 msgstr "Pridáva platobný QR kód na sumarizačnú stránku platby prevodom"
 
-#: src/class-plugin.php:261 src/class-settings.php:36
+#: src/class-plugin.php:261
+#: src/class-settings.php:36
 msgid "PAY by square"
 msgstr ""
 
