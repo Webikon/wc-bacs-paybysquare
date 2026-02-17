@@ -251,13 +251,12 @@ class Plugin {
 		 */
 		global $current_screen;
 		global $current_tab;
-		global $current_section;
 
 		// Provide the note + link to the new settings on pages were the settings were before.
-		if ( $current_screen && 'woocommerce_page_wc-settings' === $current_screen->id && 'checkout' === $current_tab && ( 'bacs' === $current_section || 'offline' === $current_section ) ) {
+		if ( $current_screen && 'woocommerce_page_wc-settings' === $current_screen->id && 'checkout' === $current_tab ) {
 			echo '<p>' . sprintf(
 				/* translators: %s: link to new settings page */
-				esc_html__( 'The PAY by square settings were moved to %s' ),
+				esc_html__( 'The PAY by square settings were moved to %s', 'wc-bacs-paybysquare' ),
 				'<a href="' . esc_attr( $this->settings_link ) . '">' . esc_html__( 'Integration', 'woocommerce' ) . ' &gt; ' . esc_html__( 'PAY by square', 'wc-bacs-paybysquare' ) . '</a>'
 			) . '</p>';
 		}
@@ -529,9 +528,16 @@ class Plugin {
 
 				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 				$raw_image_data = base64_decode( $base64_image_data );
+				error_clear_last();
 				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 				if ( false === file_put_contents( $path, $raw_image_data, LOCK_EX ) ) {
-					$this->logger->error( 'Unable to write QR code into file: ' . $path );
+					$error = error_get_last();
+					$this->logger->error(
+						'Unable to write QR code into file: ' . $path,
+						[
+							'error' => $error['message'] ?? null,
+						]
+					);
 					return [];
 				}
 				break;
