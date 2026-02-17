@@ -529,9 +529,16 @@ class Plugin {
 
 				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 				$raw_image_data = base64_decode( $base64_image_data );
+				error_clear_last();
 				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 				if ( false === file_put_contents( $path, $raw_image_data, LOCK_EX ) ) {
-					$this->logger->error( 'Unable to write QR code into file: ' . $path );
+					$error = error_get_last();
+					$this->logger->error(
+						'Unable to write QR code into file: ' . $path,
+						[
+							'error' => $error['message'] ?? null,
+						]
+					);
 					return [];
 				}
 				break;
