@@ -257,7 +257,7 @@ class Plugin {
 		if ( $current_screen && 'woocommerce_page_wc-settings' === $current_screen->id && 'checkout' === $current_tab && ( 'bacs' === $current_section || 'offline' === $current_section ) ) {
 			echo '<p>' . sprintf(
 				/* translators: %s: link to new settings page */
-				esc_html__( 'The PAY by square settings were moved to %s' ),
+				esc_html__( 'The PAY by square settings were moved to %s', 'wc-bacs-paybysquare' ),
 				'<a href="' . esc_attr( $this->settings_link ) . '">' . esc_html__( 'Integration', 'woocommerce' ) . ' &gt; ' . esc_html__( 'PAY by square', 'wc-bacs-paybysquare' ) . '</a>'
 			) . '</p>';
 		}
