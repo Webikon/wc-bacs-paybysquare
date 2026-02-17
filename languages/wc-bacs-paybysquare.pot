@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PAY by square for WooCommerce 3.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-bacs-paybysquare\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-bacs-paybysquare/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -42,12 +42,18 @@ msgstr ""
 msgid "PAY by square Settings"
 msgstr ""
 
-#: src/class-plugin.php:261
+#. translators: %s: link to new settings page
+#: src/class-plugin.php:259
+#, php-format
+msgid "The PAY by square settings were moved to %s"
+msgstr ""
+
+#: src/class-plugin.php:260
 #: src/class-settings.php:36
 msgid "PAY by square"
 msgstr ""
 
-#: src/class-plugin.php:347
+#: src/class-plugin.php:346
 msgid "For convenient payment, scan this QR code with your banking app:"
 msgstr ""
 
