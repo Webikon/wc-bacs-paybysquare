@@ -8,13 +8,13 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Tento plugin pridáva QR kód PAY by square pre priamu platbu na bankový účet vo WooCommerce. Na použitie je potrebné mať účet na stránke https://app.bysquare.com, program zadarmo ponúka generovanie 100 QR kódov mesačne.
+Plugin rozširuje WooCommerce, zobrazí platobný QR kód na stránke i v maile pri údajoch na platbu prevodom, podporuje slovenský i český QR kód.
 
 == Description ==
 
-Platobná brána Pay by Square uľahčuje platby prevodom na účet prostredníctvom QR kódov.
+Platobná brána Pay by Square uľahčuje platby prevodom na účet prostredníctvom QR kódov. Na použitie je potrebné mať účet na stránke https://app.bysquare.com, program zadarmo ponúka generovanie 100 QR kódov mesačne.
 
-Plugin vygeneruje QR kód, ktorý sa vloží na stránku na stránku so sumárom objednávky a zárove sa QR kód odošle prostredníctvom emailu s informáciami o platbe. Zákazník následne naskenuje QR kód pomocou mobilnej aplikácie svojej banky, v ktorej sa mu predvyplnia všetky potrebné údaje k platbe.
+Plugin vygeneruje QR kód, ktorý sa vloží na stránku na stránku so sumárom objednávky a zároveň sa QR kód odošle prostredníctvom emailu s informáciami o platbe. Zákazník následne naskenuje QR kód pomocou mobilnej aplikácie svojej banky, v ktorej sa mu predvyplnia všetky potrebné údaje k platbe.
 
 Plugin Pay by Square podporuje slovenský formát QR kódu pre platbu a aj český formát – QR platba.
 
