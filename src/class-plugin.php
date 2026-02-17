@@ -251,10 +251,9 @@ class Plugin {
 		 */
 		global $current_screen;
 		global $current_tab;
-		global $current_section;
 
 		// Provide the note + link to the new settings on pages were the settings were before.
-		if ( $current_screen && 'woocommerce_page_wc-settings' === $current_screen->id && 'checkout' === $current_tab && ( 'bacs' === $current_section || 'offline' === $current_section ) ) {
+		if ( $current_screen && 'woocommerce_page_wc-settings' === $current_screen->id && 'checkout' === $current_tab ) {
 			echo '<p>' . sprintf(
 				/* translators: %s: link to new settings page */
 				esc_html__( 'The PAY by square settings were moved to %s', 'wc-bacs-paybysquare' ),
