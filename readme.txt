@@ -51,7 +51,7 @@ Ak využívate na odosielanie emailov nejaký SMTP plugin, overte si, že použ�
 
 = 3.0.1 =
 * Pridané logovanie presnej chyby v prípade, že nie je možné vytvoriť obrázok s QR kódom
-* Opravené zobrazenie odkazu na nastavenia PAY by square v nastaveniach platieb a doplnený chýbajúci preklad tohto textu
+* Opravené zobrazenie odkazu na nastavenia PAY by square v nastaveniach platieb
 
 = 3.0.0 =
 * Presunutie nastavení na samostatnú stránku (Integrácia > PAY by square)
