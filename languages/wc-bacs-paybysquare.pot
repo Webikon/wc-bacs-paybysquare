@@ -2,7 +2,7 @@
 # This file is distributed under the GPLv2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: PAY by square for WooCommerce 3.0.0\n"
+"Project-Id-Version: PAY by square for WooCommerce 3.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-bacs-paybysquare/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

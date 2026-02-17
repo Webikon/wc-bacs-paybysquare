@@ -1,10 +1,9 @@
 === PAY by square pre WooCommerce ===
 Contributors: webikon, kravco, johnnypea, martinkrcho
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZJTGQMDHTEL76
 Tags: bacs, qrcode, slovakia
 Requires at least: 4.4
-Tested up to: 6.8.2
-Requires PHP: 7.2
+Tested up to: 6.9.1
+Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -49,6 +48,10 @@ Ak využívate na odosielanie emailov nejaký SMTP plugin, overte si, že použ�
 4. Pay by Square plugin - Email
 
 == Changelog ==
+
+= 3.0.1 =
+* Pridané logovanie presnej chyby v prípade, že nie je možné vytvoriť obrázok s QR kódom
+* Opravené zobrazenie odkazu na nastavenia PAY by square v nastaveniach platieb a doplnený chýbajúci preklad tohto textu
 
 = 3.0.0 =
 * Presunutie nastavení na samostatnú stránku (Integrácia > PAY by square)

@@ -9,7 +9,7 @@
  *
  * Plugin Name: PAY by square for WooCommerce
  * Description: Adds a payment QR code on summary page of direct bank transfer
- * Version: 3.0.0
+ * Version: 3.0.1
  * Author: Webikon (Matej Kravjar)
  * Author URI: https://webikon.sk
  * License: GPLv2+
@@ -17,7 +17,7 @@
  * Text Domain: wc-bacs-paybysquare
  * Domain Path: /languages
  * WC requires at least: 3.9
- * WC tested up to: 10.0.4
+ * WC tested up to: 10.5.2
  * Requires Plugins: woocommerce
  */
 
