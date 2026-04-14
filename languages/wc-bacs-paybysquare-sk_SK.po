@@ -155,3 +155,17 @@ msgstr "Zobrazuje QR kódy pre pohodlné platby pomocou bankových prevodov"
 #, php-format
 msgid "The PAY by square settings were moved to %s"
 msgstr "Nastavenia PAY by square boli presunuté do %s"
+
+#: src/class-settings.php
+msgid "Beneficiary name is not set."
+msgstr "Meno príjemcu platby nie je nastavené."
+
+#: src/class-settings.php
+msgid "Please enter the name of the person or organization receiving payments."
+msgstr "Zadajte prosím meno osoby alebo organizácie, ktorá prijíma platby."
+
+#. translators: %s: link to settings page
+#: src/class-plugin.php
+#, php-format
+msgid "PAY by square: Beneficiary name is not configured. Please set it in %s."
+msgstr "PAY by square: Meno príjemcu platby nie je nastavené. Nastavte ho v %s."

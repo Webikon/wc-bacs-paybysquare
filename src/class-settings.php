@@ -127,6 +127,13 @@ class Settings extends \WC_Integration {
 	 * @return void
 	 */
 	public function admin_options() {
+		if ( '' === trim( (string) $this->get_option( 'beneficiary' ) ) ) {
+			echo '<div class="notice notice-warning"><p><strong>'
+				. esc_html__( 'Beneficiary name is not set.', 'wc-bacs-paybysquare' )
+				. '</strong> '
+				. esc_html__( 'Please enter the name of the person or organization receiving payments.', 'wc-bacs-paybysquare' )
+				. '</p></div>';
+		}
 		parent::admin_options();
 		// Display the note on new settings page.
 		$pbsq_link    = '<a href="https://app.bysquare.com" target="_blank">app.bysquare.com</a>';
