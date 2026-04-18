@@ -221,8 +221,7 @@ class Plugin {
 	 * @param array<string,mixed> $plugin_data Array of plugin data.
 	 * @return void
 	 */
-	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-	public function plugin_row_notice( $plugin_file, $plugin_data ) {
+	public function plugin_row_notice( $plugin_file, $plugin_data ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		if ( ! function_exists( 'WC' ) ) {
 			return;
 		}
