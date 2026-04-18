@@ -235,6 +235,10 @@ class Plugin {
 		$columns = 4;
 		if ( function_exists( '_get_list_table' ) ) {
 			$table = _get_list_table( 'WP_Plugins_List_Table' );
+			// _get_list_table() returns WP_List_Table|false per WP source, but
+			// PHPStan's stub omits the false possibility — keep the guard and
+			// silence the always-true warning here.
+			// @phpstan-ignore-next-line if.alwaysTrue
 			if ( $table ) {
 				$columns = count( $table->get_columns() );
 			}
