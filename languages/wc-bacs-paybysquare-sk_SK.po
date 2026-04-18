@@ -16,11 +16,12 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:2c,1;_ex:2c,1;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:2c,1;esc_html__;esc_html_e;esc_html_x:2c,1;_n_noop:1,2;_nx_noop:3c,1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: src/class-plugin.php:207
+#: src/class-plugin.php:208
+#: src/class-plugin.php:253
 msgid "Settings"
 msgstr "Nastavenia"
 
-#: src/class-plugin.php:223
+#: src/class-plugin.php:272
 msgid "PAY by square Settings"
 msgstr "Nastavenia PAY by square"
 
@@ -101,30 +102,25 @@ msgstr "QR Platba (český)"
 msgid "Automatic (based on currency)"
 msgstr "Automaticky (na základe meny)"
 
-#: src/class-settings.php:142
+#: src/class-settings.php:149
 msgid "Your limit of generated QR codes was depleted"
 msgstr "Prekročili ste váš limit generovaných QR kódov"
 
 #. translators: %s: service link
-#: src/class-settings.php:144
+#: src/class-settings.php:151
 #, php-format
 msgid "To generate more this month, you need to upgrade your program at %s"
 msgstr "Na to, aby ste tento mesiac mohli vygenerovať ďalšie, potrebujete prejsť na vyšší program na stránke %s"
 
 #. translators: %s: service link
-#: src/class-settings.php:147
+#: src/class-settings.php:154
 #, php-format
 msgid "To learn more about the service, please visit %s"
 msgstr "Pre viac informácií o službe, prosím navštívte %s"
 
-#: src/class-plugin.php:346
+#: src/class-plugin.php:395
 msgid "For convenient payment, scan this QR code with your banking app:"
 msgstr "Pre jednoduchú úhradu naskenujte tento QR kód mobilnou aplikáciou vašej banky:"
-
-#. Author of the plugin
-#: wc-bacs-paybysquare.php
-msgid "Webikon (Matej Kravjar)"
-msgstr ""
 
 #. Author URI of the plugin
 #: wc-bacs-paybysquare.php
@@ -141,7 +137,7 @@ msgstr "PAY by square pre WooCommerce"
 msgid "Adds a payment QR code on summary page of direct bank transfer"
 msgstr "Pridáva platobný QR kód na sumarizačnú stránku platby prevodom"
 
-#: src/class-plugin.php:260
+#: src/class-plugin.php:309
 #: src/class-settings.php:36
 msgid "PAY by square"
 msgstr ""
@@ -151,21 +147,26 @@ msgid "Displays QR codes for convenient direct bank transfer payments"
 msgstr "Zobrazuje QR kódy pre pohodlné platby pomocou bankových prevodov"
 
 #. translators: %s: link to new settings page
-#: src/class-plugin.php:259
+#: src/class-plugin.php:308
 #, php-format
 msgid "The PAY by square settings were moved to %s"
 msgstr "Nastavenia PAY by square boli presunuté do %s"
 
-#: src/class-settings.php
+#: src/class-settings.php:132
 msgid "Beneficiary name is not set."
 msgstr "Meno príjemcu platby nie je nastavené."
 
-#: src/class-settings.php
+#: src/class-settings.php:134
 msgid "Please enter the name of the person or organization receiving payments."
 msgstr "Zadajte prosím meno osoby alebo organizácie, ktorá prijíma platby."
 
 #. translators: %s: link to settings page
-#: src/class-plugin.php
+#: src/class-plugin.php:252
 #, php-format
 msgid "PAY by square: Beneficiary name is not configured. Please set it in %s."
 msgstr "PAY by square: Meno príjemcu platby nie je nastavené. Nastavte ho v %s."
+
+#. Author of the plugin
+#: wc-bacs-paybysquare.php
+msgid "Webikon"
+msgstr ""
