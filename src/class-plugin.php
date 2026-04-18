@@ -213,10 +213,15 @@ class Plugin {
 	/**
 	 * Show a warning below the plugin row when Beneficiary name is empty.
 	 *
+	 * Signature is fixed by WordPress — the `after_plugin_row_{$basename}`
+	 * action always passes (string $plugin_file, array $plugin_data), so
+	 * PHPCS's UnusedFunctionParameter warning is a false positive.
+	 *
 	 * @param string              $plugin_file Path to the plugin file relative to the plugins directory.
 	 * @param array<string,mixed> $plugin_data Array of plugin data.
 	 * @return void
 	 */
+	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 	public function plugin_row_notice( $plugin_file, $plugin_data ) {
 		if ( ! function_exists( 'WC' ) ) {
 			return;
