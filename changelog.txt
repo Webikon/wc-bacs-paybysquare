@@ -1,0 +1,39 @@
+Historical changelog for versions before 3.0.0.
+Current changelog is in readme.txt.
+
+= 2.0.0 =
+* Deklarovanie podpory pre WooCommerce High-Performace Order Storage (HPOS)
+* Zmena logovania na standardne logovanie, ktore je sucastou WooCommerce
+* Pouzitie nastrojov na automaticke odhalovanie chyb v kode a oprava najdenych chyb
+
+= 1.4.2 =
+* Pridanie hlasenia chyby, ak neuspeje vlozenie suboru s QR kodom do mailu
+
+= 1.4.1 =
+* Upozornenie na nepovolene znaky v nastaveni "prijemca platby" pre cesky standard QR Platba.
+* Preferovanie uctu podla meny objednavky, pre eurach preferuje IBANy zacinajuce na SK, pri ceskych korunach na CZ
+
+= 1.4 =
+* Pridanie nastaveni a podpory pre generovanie ceskeho standardu QR Platba.
+
+= 1.3.3 =
+* Zaktualizovane info o kompatibilite s novsimi verziami WordPress a WooCommerce.
+
+= 1.3.2 =
+* Upravene instrukcie pre instalaciu a aktualizovane info o kompatibilite s novsimi verziami WordPress a WooCommerce.
+
+= 1.3.1 =
+* Zaktualizovane info o kompatibilite s novsimi verziami WordPress a WooCommerce.
+
+= 1.3 =
+* Opravena kompatibilita tvorenia e-mailov s niektorymi pluginmi
+
+= 1.2 =
+* Pridana podpora medzier v zadanom IBAN cisle a BIC kode
+* Doplnena informacia o verziach WP/WC, s ktorymi bol plugin testovany
+
+= 1.1 =
+* Doplnenie informacie do nastaveni, ze mesacny objem kodov pre ucet bol vycerpany
+
+= 1.0 =
+* Vydanie prvej verzie pluginu

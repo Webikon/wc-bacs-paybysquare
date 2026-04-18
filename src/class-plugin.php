@@ -145,6 +145,7 @@ class Plugin {
 		$plugin_basename = plugin_basename( $file );
 		add_filter( "plugin_action_links_{$plugin_basename}", [ $plugin, 'add_settings_link' ] );
 		add_filter( "network_admin_plugin_action_links_{$plugin_basename}", [ $plugin, 'add_settings_link' ] );
+		add_action( "after_plugin_row_{$plugin_basename}", [ $plugin, 'plugin_row_notice' ], 10, 2 );
 		add_filter( 'woocommerce_settings_api_form_fields_bacs', [ $plugin, 'filter_form_fields' ], 1000 );
 		add_action( 'woocommerce_settings_checkout', [ $plugin, 'add_settings_note' ], 1000, 0 );
 		add_action( 'woocommerce_thankyou_bacs', [ $plugin, 'thankyou_page_qrcode' ] );
@@ -207,6 +208,54 @@ class Plugin {
 			[ 'settings' => '<a href="' . esc_attr( $this->settings_link ) . '">' . esc_html__( 'Settings', 'wc-bacs-paybysquare' ) . '</a>' ],
 			$links
 		);
+	}
+
+	/**
+	 * Show a warning below the plugin row when Beneficiary name is empty.
+	 *
+	 * Signature is fixed by WordPress — the `after_plugin_row_{$basename}`
+	 * action always passes (string $plugin_file, array $plugin_data), so
+	 * PHPCS's UnusedFunctionParameter warning is a false positive.
+	 *
+	 * @param string              $plugin_file Path to the plugin file relative to the plugins directory.
+	 * @param array<string,mixed> $plugin_data Array of plugin data.
+	 * @return void
+	 */
+	public function plugin_row_notice( $plugin_file, $plugin_data ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		if ( ! function_exists( 'WC' ) ) {
+			return;
+		}
+		$pbsq = $this->get_pbsq();
+		if ( ! $pbsq ) {
+			return;
+		}
+		if ( '' !== trim( (string) $pbsq->get_option( 'beneficiary' ) ) ) {
+			return;
+		}
+		$columns = 4;
+		if ( function_exists( '_get_list_table' ) ) {
+			$table = _get_list_table( 'WP_Plugins_List_Table' );
+			// _get_list_table() returns WP_List_Table|false per WP source, but
+			// PHPStan's stub omits the false possibility — keep the guard and
+			// silence the always-true warning here.
+			// @phpstan-ignore-next-line if.alwaysTrue
+			if ( $table ) {
+				$columns = count( $table->get_columns() );
+			}
+		}
+		echo '<tr class="plugin-update-tr active">'
+			. '<td colspan="' . esc_attr( (string) $columns ) . '" class="plugin-update colspanchange">'
+			. '<div class="update-message notice inline notice-warning notice-alt"><p>'
+			. wp_kses(
+				sprintf(
+					/* translators: %s: link to settings page */
+					__( 'PAY by square: Beneficiary name is not configured. Please set it in %s.', 'wc-bacs-paybysquare' ),
+					'<a href="' . esc_url( $this->settings_link ) . '">' . esc_html__( 'Settings', 'wc-bacs-paybysquare' ) . '</a>'
+				),
+				[ 'a' => [ 'href' => true ] ]
+			)
+			. '</p></div>'
+			. '</td></tr>';
 	}
 
 	/**
@@ -376,7 +425,8 @@ class Plugin {
 			$bank_account = $account;
 			$iban         = static::sanitize( $bank_account['iban'] );
 			$bic          = static::sanitize( $bank_account['bic'] );
-			if ( $iban && $bic ) {
+			// Validate: IBAN must be 15-34 chars starting with 2 letters + 2 digits, BIC must be 8 or 11 chars.
+			if ( $iban && $bic && preg_match( '/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$/', $iban ) && preg_match( '/^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$/', $bic ) ) {
 				$bank_accounts[] = [
 					'iban' => $iban,
 					'bic'  => $bic,

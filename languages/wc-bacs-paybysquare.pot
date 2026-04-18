@@ -2,7 +2,7 @@
 # This file is distributed under the GPLv2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: PAY by square for WooCommerce 3.0.1\n"
+"Project-Id-Version: PAY by square for WooCommerce 3.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-bacs-paybysquare/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #. Author of the plugin
 #: wc-bacs-paybysquare.php
-msgid "Webikon (Matej Kravjar)"
+msgid "Webikon"
 msgstr ""
 
 #. Author URI of the plugin
@@ -34,26 +34,33 @@ msgstr ""
 msgid "https://webikon.sk"
 msgstr ""
 
-#: src/class-plugin.php:207
+#: src/class-plugin.php:208
+#: src/class-plugin.php:253
 msgid "Settings"
 msgstr ""
 
-#: src/class-plugin.php:223
+#. translators: %s: link to settings page
+#: src/class-plugin.php:252
+#, php-format
+msgid "PAY by square: Beneficiary name is not configured. Please set it in %s."
+msgstr ""
+
+#: src/class-plugin.php:272
 msgid "PAY by square Settings"
 msgstr ""
 
 #. translators: %s: link to new settings page
-#: src/class-plugin.php:259
+#: src/class-plugin.php:308
 #, php-format
 msgid "The PAY by square settings were moved to %s"
 msgstr ""
 
-#: src/class-plugin.php:260
+#: src/class-plugin.php:309
 #: src/class-settings.php:36
 msgid "PAY by square"
 msgstr ""
 
-#: src/class-plugin.php:346
+#: src/class-plugin.php:395
 msgid "For convenient payment, scan this QR code with your banking app:"
 msgstr ""
 
@@ -138,18 +145,26 @@ msgstr ""
 msgid "Automatic (based on currency)"
 msgstr ""
 
-#: src/class-settings.php:142
+#: src/class-settings.php:132
+msgid "Beneficiary name is not set."
+msgstr ""
+
+#: src/class-settings.php:134
+msgid "Please enter the name of the person or organization receiving payments."
+msgstr ""
+
+#: src/class-settings.php:149
 msgid "Your limit of generated QR codes was depleted"
 msgstr ""
 
 #. translators: %s: service link
-#: src/class-settings.php:144
+#: src/class-settings.php:151
 #, php-format
 msgid "To generate more this month, you need to upgrade your program at %s"
 msgstr ""
 
 #. translators: %s: service link
-#: src/class-settings.php:147
+#: src/class-settings.php:154
 #, php-format
 msgid "To learn more about the service, please visit %s"
 msgstr ""

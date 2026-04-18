@@ -16,6 +16,7 @@ jobs:
       - name: Composer Install
         uses: php-actions/composer@v6
         with:
+          php_version: '8.4'
           args: --no-scripts
       - name: Code Standards
         run: jobs/code-standards.sh
